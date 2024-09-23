@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "module": "ESNext", // ESM 모듈 시스템을 사용
+    "module": "CommonJS", // ESM 모듈 시스템을 사용
+    "preserveValueImports": false,
     "target": "ES6", // ES6 이상의 버전을 사용해야 함
     "moduleResolution": "node", // Node.js 방식의 모듈 해석
     "outDir": "./dist", // 컴파일된 파일이 저장될 디렉터리
