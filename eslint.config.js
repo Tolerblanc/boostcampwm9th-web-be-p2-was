@@ -5,7 +5,6 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   pluginJs.configs.recommended,
-  eslintConfigPrettier,
   ...tseslint.configs.recommended,
   {
     languageOptions: {
