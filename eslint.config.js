@@ -1,11 +1,12 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import eslintConfigPrettier from "eslint-config-prettier";
-import tseslint from "typescript-eslint";
+import tslint from "typescript-eslint";
 
-export default tseslint.config(
+export default tslint.config(
   pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tslint.configs.recommended,
+  eslintConfigPrettier,
   {
     languageOptions: {
       globals: {
@@ -24,5 +25,8 @@ export default tseslint.config(
       "no-unused-vars": "warn",
       eqeqeq: ["error", "always"],
     },
+  },
+  {
+    ignores: ["dist/*", "node_modules/*"],
   }
 );
