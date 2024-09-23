@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "ESNext", // ESM 모듈 시스템을 사용
+    "target": "ES6", // ES6 이상의 버전을 사용해야 함
+    "moduleResolution": "node", // Node.js 방식의 모듈 해석
+    "outDir": "./dist", // 컴파일된 파일이 저장될 디렉터리
+    "rootDir": "./srcs", // 소스 파일 위치
+    "esModuleInterop": true, // CommonJS 모듈과의 호환성
+    "forceConsistentCasingInFileNames": true, // 파일 이름의 대소문자 일관성 유지
+    "skipLibCheck": true, // 라이브러리 파일의 타입 검사를 생략
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["srcs/*.ts"], // 포함할 TypeScript 파일들
+  "exclude": ["node_modules", "dist", "docs"] // 제외할 디렉터리
+}
