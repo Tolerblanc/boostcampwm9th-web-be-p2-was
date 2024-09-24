@@ -3,10 +3,10 @@ import { createLogger, format, transports } from "winston";
 const { printf, combine, timestamp, label, colorize } = format;
 
 const logFormat = printf(({ level, message, label, timestamp }) => {
-  return `[${level}] ${timestamp} | ${label}: ${message}`; // [level] timestamp label: message
+  return `[${level}] ${timestamp} | ${label}: ${message}`;
 });
 
-export const logger = createLogger({
+const logger = createLogger({
   level: "info",
   format: combine(
     colorize(),
@@ -16,3 +16,5 @@ export const logger = createLogger({
   ),
   transports: [new transports.Console()],
 });
+
+export { logger };
