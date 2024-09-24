@@ -10,6 +10,16 @@ function getDirname(importMetaUrl: string) {
 
 const __dirname = getDirname(import.meta.url);
 
+const EXT_NAME = {
+  HTML: "html",
+  TEXT: "txt",
+} as const;
+
+const CONTENT_TYPE = {
+  [EXT_NAME.HTML]: "text/html",
+  [EXT_NAME.TEXT]: "text/plain",
+} as const;
+
 const server = net.createServer((socket) => {
   socket.on("data", (data) => {
     logger.info(data.toString());
@@ -19,9 +29,16 @@ const server = net.createServer((socket) => {
 
     if (method === "GET") {
       try {
-        const ext = extname(uri);
+        const ext = extname(uri).slice(1).toUpperCase();
 
         if (ext) {
+          if (!EXT_NAME[ext]) {
+            // TODO: Custom Error로 변경
+            const error = new Error("Unsupported Media Type");
+            error.status = 415;
+            throw error;
+          }
+
           const rootDir = join(__dirname, "../");
           const filePath = join(rootDir, "/views", uri);
 
@@ -34,7 +51,7 @@ const server = net.createServer((socket) => {
           const data = readFileSync(filePath);
 
           socket.write("HTTP/1.1 200 OK\r\n");
-          socket.write("Content-Type: text/html\r\n");
+          socket.write(`Content-Type: ${CONTENT_TYPE[ext]}\r\n`);
           socket.write("\r\n");
           socket.write(data);
         } else {
