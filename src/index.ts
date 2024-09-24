@@ -1,8 +1,8 @@
 import net from "node:net";
 import { CustomError } from "@/src/util/customError";
+import { getDirname } from "@/src/util/getDirname";
 import { logger } from "./util/logger";
-import { extname, join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { extname, join } from "node:path";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 
 type TUser = {
@@ -11,10 +11,6 @@ type TUser = {
   email: string;
   password: string;
 };
-
-function getDirname(importMetaUrl: string) {
-  return dirname(fileURLToPath(importMetaUrl));
-}
 
 const __dirname = getDirname(import.meta.url);
 
@@ -53,10 +49,12 @@ function serveStaticFile(socket: net.Socket, uri: string) {
 
   const data = readFileSync(filePath);
 
-  socket.write("HTTP/1.1 200 OK\r\n");
-  socket.write(`Content-Type: ${CONTENT_TYPE[ext]}\r\n`);
-  socket.write("\r\n");
-  socket.write(data);
+  sendResponse(socket, {
+    status: 200,
+    message: "OK",
+    contentType: CONTENT_TYPE[ext],
+    data: data.toString(),
+  });
 }
 
 function parseQueryParameters(str: string) {
@@ -71,18 +69,38 @@ function parseQueryParameters(str: string) {
   }, {});
 }
 
+function parseRequestData(data: string) {
+  const [requestHeader] = data.toString().split("\r\n\r\n");
+  const [firstLine] = requestHeader.split("\r\n");
+  const [method, uri, protocol] = firstLine.split(" ");
+
+  const [endpoint, queryString] = uri.split("?");
+
+  return { protocol, method, uri, endpoint, queryString };
+}
+
+function sendResponse(
+  socket: net.Socket,
+  options: Record<string, string | number>
+) {
+  const { status, message, contentType, data } = options;
+  socket.write(`HTTP/1.1 ${status} ${message}\r\n`);
+  socket.write(`Content-Type: ${contentType}\r\n`);
+  socket.write("\r\n");
+
+  if (data) socket.write(data as string);
+}
+
 const server = net.createServer((socket) => {
   socket.on("data", (data) => {
-    const [requestHeader] = data.toString().split("\r\n\r\n");
-    const [firstLine] = requestHeader.split("\r\n");
-    const [method, uri, protocol] = firstLine.split(" ");
-
-    const [endpoint, queryString] = uri.split("?");
+    const { protocol, method, uri, endpoint, queryString } = parseRequestData(
+      data.toString()
+    );
 
     logger.info(`${protocol} ${method} ${uri}`);
 
-    if (method === "GET") {
-      try {
+    try {
+      if (method === "GET") {
         const ext = extname(endpoint).slice(1);
 
         if (ext) {
@@ -125,27 +143,36 @@ const server = net.createServer((socket) => {
 
             writeFileSync(dbPath, JSON.stringify(users));
 
-            socket.write("HTTP/1.1 200 OK\r\n");
-            socket.write(`Content-Type: ${CONTENT_TYPE.json}\r\n`);
-            socket.write("\r\n");
-            socket.write(JSON.stringify(newUser));
+            sendResponse(socket, {
+              status: 200,
+              message: "OK",
+              contentType: CONTENT_TYPE.json,
+              data: JSON.stringify(newUser),
+            });
+          } else {
+            throw new CustomError({ status: 404, message: "Not Found" });
           }
         }
-      } catch (e) {
-        const {
-          status = 500,
-          message = "nternal Server Error",
-          stack,
-        } = e as CustomError;
-
-        socket.write(`HTTP/1.1 ${status} ${message}\r\n`);
-        socket.write("Content-Type: text/plain\r\n");
-        socket.write("\r\n");
-        socket.write(`${message}\r\n`);
-        logger.error(`${method} ${uri} ${stack}`);
-      } finally {
-        socket.end();
+      } else {
+        throw new CustomError({ status: 405, message: "Method Not Allowed" });
       }
+    } catch (e) {
+      const {
+        status = 500,
+        message = "Internal Server Error",
+        stack,
+      } = e as CustomError;
+
+      sendResponse(socket, {
+        status,
+        message,
+        data: message,
+        contentType: CONTENT_TYPE[EXT_NAME.txt],
+      });
+
+      logger.error(`${method} ${uri}\n${stack}`);
+    } finally {
+      socket.end();
     }
   });
 });
