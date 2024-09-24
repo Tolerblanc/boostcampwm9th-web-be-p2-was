@@ -11,50 +11,32 @@ function getDirname(importMetaUrl: string) {
 const __dirname = getDirname(import.meta.url);
 
 const EXT_NAME = {
-  HTML: "html",
-  TEXT: "txt",
-  CSS: "css",
-  ICO: "ico",
-  PNG: "png",
-  JPG: "jpg",
-  JS: "js",
+  html: "html",
+  txt: "txt",
+  css: "css",
+  ico: "ico",
+  png: "png",
+  jpg: "jpg",
+  js: "js",
 } as const;
 
 const CONTENT_TYPE = {
-  [EXT_NAME.HTML]: "text/html",
-  [EXT_NAME.TEXT]: "text/plain",
-  [EXT_NAME.CSS]: "text/css",
-  [EXT_NAME.ICO]: "image/x-icon",
-  [EXT_NAME.PNG]: "image/png",
-  [EXT_NAME.JPG]: "image/jpeg",
-  [EXT_NAME.JS]: "text/javascript",
+  [EXT_NAME.html]: "text/html",
+  [EXT_NAME.txt]: "text/plain",
+  [EXT_NAME.css]: "text/css",
+  [EXT_NAME.ico]: "image/x-icon",
+  [EXT_NAME.png]: "image/png",
+  [EXT_NAME.jpg]: "image/jpeg",
+  [EXT_NAME.js]: "text/javascript",
 } as const;
 
-function renderView(socket: net.Socket, uri: string) {
-  const ext = extname(uri).slice(1).toUpperCase();
-
-  const rootDir = join(__dirname, "../");
-  const filePath = join(rootDir, "/views", uri);
-
-  if (!existsSync(filePath)) {
-    const error = new Error("Not Found");
-    error.status = 404;
-    throw error;
-  }
-
-  const data = readFileSync(filePath);
-
-  socket.write("HTTP/1.1 200 OK\r\n");
-  socket.write(`Content-Type: ${CONTENT_TYPE[ext]}\r\n`);
-  socket.write("\r\n");
-  socket.write(data);
-}
-
 function serveStaticFile(socket: net.Socket, uri: string) {
-  const ext = extname(uri).slice(1).toUpperCase();
+  const ext = extname(uri).slice(1);
+
+  const dir = EXT_NAME[ext] === EXT_NAME.html ? "views" : "static";
 
   const rootDir = join(__dirname, "../");
-  const filePath = join(rootDir, "/static", uri);
+  const filePath = join(rootDir, `/${dir}`, uri);
 
   if (!existsSync(filePath)) {
     const error = new Error("Not Found");
@@ -80,7 +62,7 @@ const server = net.createServer((socket) => {
 
     if (method === "GET") {
       try {
-        const ext = extname(uri).slice(1).toUpperCase();
+        const ext = extname(uri).slice(1);
 
         if (ext) {
           if (!EXT_NAME[ext]) {
@@ -90,13 +72,8 @@ const server = net.createServer((socket) => {
             throw error;
           }
 
-          // 미들웨어
-          // html 분기 / 나머지는 그냥 static/ 폴더에서 찾기?
-          if (EXT_NAME[ext] === EXT_NAME.HTML) {
-            renderView(socket, uri);
-          } else {
-            serveStaticFile(socket, uri);
-          }
+          // *미들웨어: 정적 파일 서빙
+          serveStaticFile(socket, uri);
         } else {
           // TODO: 라우트요청
         }
@@ -104,9 +81,8 @@ const server = net.createServer((socket) => {
         socket.write(`HTTP/1.1 ${e.status} ${e.message}`);
         socket.write("Content-Type: text/plain\r\n");
         socket.write("\r\n");
-        socket.write(e.message);
-        logger.error(`${method} ${uri} ${e.message}`);
-        console.log(e);
+        socket.write(`${e.message}\r\n`);
+        logger.error(`${method} ${uri} ${e.stack}`);
       } finally {
         socket.end();
       }
