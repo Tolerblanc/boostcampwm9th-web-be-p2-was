@@ -9,8 +9,9 @@
     "esModuleInterop": true, // CommonJS 모듈과의 호환성
     "forceConsistentCasingInFileNames": true, // 파일 이름의 대소문자 일관성 유지
     "skipLibCheck": true, // 라이브러리 파일의 타입 검사를 생략
+    "strict": true,
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src/*.ts"], // 포함할 TypeScript 파일들
