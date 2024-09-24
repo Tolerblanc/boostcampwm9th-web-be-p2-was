@@ -1,4 +1,5 @@
 import net from "node:net";
+import { CustomError } from "@/src/util/customError";
 import { logger } from "./util/logger";
 import { extname, join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -47,9 +48,7 @@ function serveStaticFile(socket: net.Socket, uri: string) {
   const filePath = join(rootDir, `/${dir}`, uri);
 
   if (!existsSync(filePath)) {
-    const error = new Error("Not Found");
-    error.status = 404;
-    throw error;
+    throw new CustomError({ status: 404, message: "Not Found" });
   }
 
   const data = readFileSync(filePath);
@@ -74,8 +73,8 @@ function parseQueryParameters(str: string) {
 
 const server = net.createServer((socket) => {
   socket.on("data", (data) => {
-    const [requestHeader, body] = data.toString().split("\r\n\r\n");
-    const [firstLine, ...options] = requestHeader.split("\r\n");
+    const [requestHeader] = data.toString().split("\r\n\r\n");
+    const [firstLine] = requestHeader.split("\r\n");
     const [method, uri, protocol] = firstLine.split(" ");
 
     const [endpoint, queryString] = uri.split("?");
@@ -88,13 +87,12 @@ const server = net.createServer((socket) => {
 
         if (ext) {
           if (!EXT_NAME[ext]) {
-            // TODO: Custom Error로 변경
-            const error = new Error("Unsupported Media Type");
-            error.status = 415;
-            throw error;
+            throw new CustomError({
+              status: 415,
+              message: "Unsupported Media Type",
+            });
           }
 
-          // *미들웨어: 정적 파일 서빙
           serveStaticFile(socket, uri);
         } else {
           if (endpoint === "/create") {
@@ -118,9 +116,7 @@ const server = net.createServer((socket) => {
             });
 
             if (existUser) {
-              const error = new Error("Aleady Exist");
-              error.status = 409;
-              throw error;
+              throw new CustomError({ status: 409, message: "Aleady Exist" });
             }
 
             const newUser = { userId, password, email, name };
@@ -136,11 +132,17 @@ const server = net.createServer((socket) => {
           }
         }
       } catch (e) {
-        socket.write(`HTTP/1.1 ${e.status} ${e.message}`);
+        const {
+          status = 500,
+          message = "nternal Server Error",
+          stack,
+        } = e as CustomError;
+
+        socket.write(`HTTP/1.1 ${status} ${message}\r\n`);
         socket.write("Content-Type: text/plain\r\n");
         socket.write("\r\n");
-        socket.write(`${e.message}\r\n`);
-        logger.error(`${method} ${uri} ${e.stack}`);
+        socket.write(`${message}\r\n`);
+        logger.error(`${method} ${uri} ${stack}`);
       } finally {
         socket.end();
       }
