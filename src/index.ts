@@ -1,14 +1,21 @@
 import net from "node:net";
-import winston from "winston";
+import { createLogger, format, transports } from "winston";
 
-const logger = winston.createLogger({
+const { printf, combine, timestamp, label, colorize } = format;
+
+const logFormat = printf(({ level, message, label, timestamp }) => {
+  return `[${level}] ${timestamp} | ${label}: ${message}`; // [level] timestamp label: message
+});
+
+const logger = createLogger({
   level: "info",
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: "error.log", level: "error" }),
-    new winston.transports.File({ filename: "combined.log" }),
-  ],
+  format: combine(
+    colorize(),
+    timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    label({ label: "Web-BE-P1 WAS" }),
+    logFormat
+  ),
+  transports: [new transports.Console()],
 });
 
 const server = net.createServer((socket) => {
