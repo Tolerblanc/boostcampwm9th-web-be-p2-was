@@ -9,7 +9,7 @@ import {
 } from "@/util/httpError";
 import { logger } from "@/util/logger";
 import { parseRequestData } from "@/util/requestParser";
-import { CONTENT_TYPE, EXT_NAME } from "@/constants/contentType.enum";
+import { CONTENT_TYPE, EXT_NAME, ExtName } from "@/constants/contentType.enum";
 import { sendResponse } from "@/util/sendResponse";
 import { serveStaticFile } from "@/util/serveStatic";
 import { createUser } from "@/users/createUser";
@@ -24,10 +24,10 @@ const server = net.createServer((socket) => {
 
     try {
       if (method === "GET") {
-        const ext = extname(endpoint).slice(1) as keyof typeof EXT_NAME;
+        const ext = extname(endpoint).slice(1).toLowerCase() as ExtName;
 
         if (ext) {
-          if (!EXT_NAME[ext]) {
+          if (!EXT_NAME.includes(ext)) {
             throw new UnsupportedMediaTypeError();
           }
 
@@ -39,7 +39,7 @@ const server = net.createServer((socket) => {
             sendResponse(socket, {
               status: 200,
               message: "OK",
-              contentType: CONTENT_TYPE.json,
+              contentType: "json",
               data: JSON.stringify(newUser),
             });
           } else {
@@ -60,7 +60,7 @@ const server = net.createServer((socket) => {
         status,
         message,
         data: message,
-        contentType: CONTENT_TYPE[EXT_NAME.txt],
+        contentType: CONTENT_TYPE["txt"],
       });
 
       logger.error(`${method} ${uri}\n${stack}`);
