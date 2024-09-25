@@ -1,9 +1,13 @@
 import net from "node:net";
 
-function sendResponse(
-  socket: net.Socket,
-  options: Record<string, string | number>
-) {
+type ResponseOptions = {
+  status: number;
+  message: string;
+  contentType: string;
+  data?: string;
+};
+
+function sendResponse(socket: net.Socket, options: ResponseOptions) {
   const { status, message, contentType, data } = options;
   socket.write(`HTTP/1.1 ${status} ${message}\r\n`);
   socket.write(`Content-Type: ${contentType}\r\n`);
