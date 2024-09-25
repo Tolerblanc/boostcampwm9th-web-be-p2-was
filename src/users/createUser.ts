@@ -13,13 +13,19 @@ type User = {
 
 const __dirname = getDirname(import.meta.url);
 
-async function createUser(query: Record<string, string>) {
+function validateQuery(query: Record<string, string>) {
   const { userId, password, name, email } = query;
 
-  if (!userId || !password || !name || !email) {
-    throw new BadRequestError();
-  }
+  if (!userId) throw new BadRequestError("User ID is required");
+  if (!password) throw new BadRequestError("Password is required");
+  if (!name) throw new BadRequestError("Name is required");
+  if (!email) throw new BadRequestError("Email is required");
 
+  return { userId, password, name, email };
+}
+
+async function createUser(query: Record<string, string>) {
+  const { userId, password, name, email } = validateQuery(query);
   const rootDir = join(__dirname, "../../");
   const dbPath = join(rootDir, "db", "user.json");
 
