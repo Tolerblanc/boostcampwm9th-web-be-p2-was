@@ -34,7 +34,7 @@ const server = net.createServer((socket) => {
           await serveStaticFile(socket, uri);
         } else {
           if (endpoint === "/create") {
-            const newUser = createUser(query);
+            const newUser = await createUser(query);
 
             sendResponse(socket, {
               status: 200,
