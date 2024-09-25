@@ -1,7 +1,12 @@
 import net from "node:net";
 import { extname } from "node:path";
 
-import { CustomError } from "@/util/customError";
+import {
+  HttpError,
+  MethodNotAllowedError,
+  NotFoundError,
+  UnsupportedMediaTypeError,
+} from "@/util/httpError";
 import { logger } from "@/util/logger";
 import { parseRequestData } from "@/util/requestParser";
 import { CONTENT_TYPE, EXT_NAME } from "@/constants/contentType.enum";
@@ -23,10 +28,7 @@ const server = net.createServer((socket) => {
 
         if (ext) {
           if (!EXT_NAME[ext]) {
-            throw new CustomError({
-              status: 415,
-              message: "Unsupported Media Type",
-            });
+            throw new UnsupportedMediaTypeError();
           }
 
           serveStaticFile(socket, uri);
@@ -41,18 +43,18 @@ const server = net.createServer((socket) => {
               data: JSON.stringify(newUser),
             });
           } else {
-            throw new CustomError({ status: 404, message: "Not Found" });
+            throw new NotFoundError();
           }
         }
       } else {
-        throw new CustomError({ status: 405, message: "Method Not Allowed" });
+        throw new MethodNotAllowedError();
       }
     } catch (e) {
       const {
         status = 500,
         message = "Internal Server Error",
         stack,
-      } = e as CustomError;
+      } = e as HttpError;
 
       sendResponse(socket, {
         status,

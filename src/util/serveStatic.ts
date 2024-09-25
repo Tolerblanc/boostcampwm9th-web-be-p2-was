@@ -3,7 +3,7 @@ import { join, extname } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 
 import { getDirname } from "./getDirname";
-import { CustomError } from "@/util/customError";
+import { NotFoundError } from "@/util/httpError";
 import { sendResponse } from "@/util/sendResponse";
 import { CONTENT_TYPE, EXT_NAME } from "@/constants/contentType.enum";
 
@@ -18,7 +18,7 @@ function serveStaticFile(socket: net.Socket, uri: string) {
   const filePath = join(rootDir, `/${dir}`, uri);
 
   if (!existsSync(filePath)) {
-    throw new CustomError({ status: 404, message: "Not Found" });
+    throw new NotFoundError("Not Found");
   }
 
   const data = readFileSync(filePath);

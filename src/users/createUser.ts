@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { getDirname } from "@/util/getDirname";
-import { CustomError } from "@/util/customError";
+import { BadRequestError, ConflictError } from "@/util/httpError";
 
 type TUser = {
   userId: string;
@@ -17,7 +17,7 @@ function createUser(query: Record<string, string>) {
   const { userId, password, name, email } = query;
 
   if (!userId || !password || !name || !email) {
-    throw new CustomError({ status: 400, message: "Bad Request" });
+    throw new BadRequestError();
   }
 
   const rootDir = join(__dirname, "../../");
@@ -30,7 +30,7 @@ function createUser(query: Record<string, string>) {
   });
 
   if (existUser) {
-    throw new CustomError({ status: 409, message: "Aleady Exist" });
+    throw new ConflictError("Aleady Exist");
   }
 
   const newUser: TUser = { userId, password, email, name };
