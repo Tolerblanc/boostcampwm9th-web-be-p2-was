@@ -63,7 +63,7 @@ const server = net.createServer((socket) => {
 
       logger.error(`${method} ${uri}\n${stack}`);
     } finally {
-      socket.end();
+      if (socket.writable) socket.end();
     }
   });
 });
