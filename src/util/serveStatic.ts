@@ -14,7 +14,7 @@ async function serveStaticFile(socket: net.Socket, uri: string) {
 
   const dir = ext === "html" ? "views" : "static";
 
-  const rootDir = join(__dirname, "../");
+  const rootDir = join(__dirname, "../../");
   const filePath = join(rootDir, `/${dir}`, uri);
 
   try {
