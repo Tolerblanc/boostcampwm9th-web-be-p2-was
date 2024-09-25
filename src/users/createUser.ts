@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import { getDirname } from "@/util/getDirname";
@@ -13,7 +13,7 @@ type User = {
 
 const __dirname = getDirname(import.meta.url);
 
-function createUser(query: Record<string, string>) {
+async function createUser(query: Record<string, string>) {
   const { userId, password, name, email } = query;
 
   if (!userId || !password || !name || !email) {
@@ -23,7 +23,7 @@ function createUser(query: Record<string, string>) {
   const rootDir = join(__dirname, "../../");
   const dbPath = join(rootDir, "db", "user.json");
 
-  const users = JSON.parse(readFileSync(dbPath).toString()) as User[];
+  const users = JSON.parse((await readFile(dbPath)).toString()) as User[];
 
   const existUser = users.find((user) => {
     return user.name === name || user.userId === userId || user.email === email;
@@ -37,7 +37,7 @@ function createUser(query: Record<string, string>) {
 
   users.push(newUser);
 
-  writeFileSync(dbPath, JSON.stringify(users));
+  await writeFile(dbPath, JSON.stringify(users));
 
   return { userId, email, name };
 }

@@ -15,7 +15,7 @@ import { serveStaticFile } from "@/util/serveStatic";
 import { createUser } from "@/users/createUser";
 
 const server = net.createServer((socket) => {
-  socket.on("data", (data) => {
+  socket.on("data", async (data) => {
     const { protocol, method, uri, endpoint, query } = parseRequestData(
       data.toString()
     );
@@ -31,7 +31,7 @@ const server = net.createServer((socket) => {
             throw new UnsupportedMediaTypeError();
           }
 
-          serveStaticFile(socket, uri);
+          await serveStaticFile(socket, uri);
         } else {
           if (endpoint === "/create") {
             const newUser = createUser(query);
