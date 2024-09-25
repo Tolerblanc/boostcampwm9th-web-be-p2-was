@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { getDirname } from "@/util/getDirname";
 import { BadRequestError, ConflictError } from "@/util/httpError";
 
-type TUser = {
+type User = {
   userId: string;
   name: string;
   email: string;
@@ -23,7 +23,7 @@ function createUser(query: Record<string, string>) {
   const rootDir = join(__dirname, "../../");
   const dbPath = join(rootDir, "db", "user.json");
 
-  const users = JSON.parse(readFileSync(dbPath).toString()) as TUser[];
+  const users = JSON.parse(readFileSync(dbPath).toString()) as User[];
 
   const existUser = users.find((user) => {
     return user.name === name || user.userId === userId || user.email === email;
@@ -33,7 +33,7 @@ function createUser(query: Record<string, string>) {
     throw new ConflictError("Aleady Exist");
   }
 
-  const newUser: TUser = { userId, password, email, name };
+  const newUser: User = { userId, password, email, name };
 
   users.push(newUser);
 
