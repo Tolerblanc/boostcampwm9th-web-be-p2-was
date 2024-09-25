@@ -5,8 +5,7 @@ import { getDirname } from "@/util/getDirname";
 import { BadRequestError, ConflictError } from "@/util/httpError";
 
 type User = {
-  userId: string;
-  name: string;
+  nickname: string;
   email: string;
   password: string;
 };
@@ -14,38 +13,37 @@ type User = {
 const __dirname = getDirname(import.meta.url);
 
 function validateQuery(query: Record<string, string>) {
-  const { userId, password, name, email } = query;
+  const { password, nickname, email } = query;
 
-  if (!userId) throw new BadRequestError("User ID is required");
   if (!password) throw new BadRequestError("Password is required");
-  if (!name) throw new BadRequestError("Name is required");
+  if (!nickname) throw new BadRequestError("Nickname is required");
   if (!email) throw new BadRequestError("Email is required");
 
-  return { userId, password, name, email };
+  return { password, nickname, email };
 }
 
 async function createUser(query: Record<string, string>) {
-  const { userId, password, name, email } = validateQuery(query);
+  const { password, nickname, email } = validateQuery(query);
   const rootDir = join(__dirname, "../../");
   const dbPath = join(rootDir, "db", "user.json");
 
   const users = JSON.parse((await readFile(dbPath)).toString()) as User[];
 
   const existUser = users.find((user) => {
-    return user.name === name || user.userId === userId || user.email === email;
+    return user.nickname === nickname || user.email === email;
   });
 
   if (existUser) {
     throw new ConflictError("Aleady Exist");
   }
 
-  const newUser: User = { userId, password, email, name };
+  const newUser: User = { password, email, nickname };
 
   users.push(newUser);
 
   await writeFile(dbPath, JSON.stringify(users));
 
-  return { userId, email, name };
+  return { email, nickname };
 }
 
 export { createUser };
