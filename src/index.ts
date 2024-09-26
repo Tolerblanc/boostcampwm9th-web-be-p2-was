@@ -1,15 +1,20 @@
 import { WasApplication } from "./core/app";
-import { Router } from "@/core/router";
 import { createUser } from "./users/createUser";
+import { Request } from "@/core/request";
+import { Response } from "@/core/response";
+
+async function createHandler(request: Request, response: Response) {
+  const newUser = await createUser(request.query);
+
+  response.contentType = "json";
+  response.data = JSON.stringify(newUser);
+  response.send();
+}
 
 function bootstrap() {
-  const app = WasApplication.create();
-  //   const router = new Router();
-  //   router.get("/index.html");
-  //   router.get("/form.html");
-  //   router.get("/create");
+  const app = new WasApplication();
 
-  //   app.use(router.handle);
+  app.get("/create", createHandler);
 
   app.listen(3000);
 }
