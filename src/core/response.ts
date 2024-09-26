@@ -22,8 +22,6 @@ class Response {
     this.socket.write(`Content-Type: ${this.contentType}\r\n`);
     this.socket.write("\r\n");
     if (this.data) this.socket.write(this.data);
-
-    this.socket.end();
   }
 }
 
