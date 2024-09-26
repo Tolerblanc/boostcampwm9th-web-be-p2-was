@@ -62,3 +62,15 @@
 - 최종 목표로 하는 구조
 
 ![image](https://github.com/user-attachments/assets/08e4b639-c293-45b5-bf74-e29f2929a81d)
+
+- Express 흐름 이해해보기
+
+![image](https://github.com/user-attachments/assets/6c8cb2fa-2c55-4763-b396-37e617175da1)
+
+- 1차 설계 개선
+
+![image](https://github.com/user-attachments/assets/c1255910-a2f5-4725-bbcd-5aa824e42aff)
+
+- 2차 설계 개선
+
+![image](https://github.com/user-attachments/assets/960c325b-3391-487b-8465-53411f491f3a)
