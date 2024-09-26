@@ -1,66 +1,53 @@
 import net from "node:net";
 import { extname } from "node:path";
 
-import {
-  HttpError,
-  MethodNotAllowedError,
-  NotFoundError,
-  UnsupportedMediaTypeError,
-} from "@/util/httpError";
+import { HttpError, UnsupportedMediaTypeError } from "@/util/httpError";
 import { logger } from "@/util/logger";
 import { CONTENT_TYPE, EXT_NAME, ExtName } from "@/constants/contentType.enum";
 import { serveStaticFile } from "@/util/serveStatic";
-import { createUser } from "@/users/createUser";
 import { Middleware, MiddlewareHandler } from "@/core/middleware";
 import { Request } from "@/core/request";
 import { Response } from "@/core/response";
+import { Router } from "./router";
 
 class WasApplication {
   private middleware: Middleware;
-  private server: net.Server;
+  private router: Router;
+  private server?: net.Server;
 
-  constructor(server: net.Server) {
+  constructor() {
     this.middleware = new Middleware();
-    this.server = server;
+    this.router = new Router();
+    //TODO: 서버 초기화 로직 개선
+    this.init();
   }
 
-  static create() {
-    const server = net.createServer((socket) => {
+  init() {
+    this.middleware.use(async (request, response) => {
+      const ext = extname(request.endpoint).slice(1).toLowerCase() as ExtName;
+      if (ext) {
+        if (!EXT_NAME.includes(ext)) {
+          throw new UnsupportedMediaTypeError();
+        }
+
+        await serveStaticFile(request, response);
+      }
+    });
+
+    this.server = net.createServer((socket) => {
       socket.on("data", async (data) => {
         const request = new Request(data.toString());
         const response = new Response(socket);
         logger.info(request.toString());
 
         try {
-          if (request.method === "GET") {
-            const ext = extname(request.endpoint)
-              .slice(1)
-              .toLowerCase() as ExtName;
-
-            if (ext) {
-              if (!EXT_NAME.includes(ext)) {
-                throw new UnsupportedMediaTypeError();
-              }
-
-              await serveStaticFile(request, response);
-            } else {
-              if (request.endpoint === "/create") {
-                const newUser = await createUser(request.query);
-
-                response.contentType = "json";
-                response.data = JSON.stringify(newUser);
-                response.send();
-              } else {
-                throw new NotFoundError();
-              }
-            }
-          } else {
-            throw new MethodNotAllowedError();
-          }
+          await this.middleware.handle(request, response);
+          await this.router.handle(request, response);
         } catch (e) {
           const {
             status = 500,
             message = "Internal Server Error",
+
             stack,
           } = e as HttpError;
 
@@ -76,16 +63,18 @@ class WasApplication {
         }
       });
     });
-
-    return new WasApplication(server);
   }
 
-  use(handler: MiddlewareHandler) {
-    this.middleware.use(handler);
+  use(handler: Router) {
+    this.router = handler;
+  }
+
+  get(path: string, handler: MiddlewareHandler) {
+    this.router.get(path, handler);
   }
 
   listen(port: number) {
-    this.server.listen(port, () => {
+    this.server?.listen(port, () => {
       logger.info(`${port}번 포트에서 서버 대기 중`);
     });
   }
