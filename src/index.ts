@@ -4,14 +4,10 @@ import { Request } from "@/core/request";
 import { Response } from "@/core/response";
 
 async function createHandler(request: Request, response: Response) {
+  //TODO: 컨트롤러로 분리
   const newUser = await createUser(request.query);
 
-  response
-    .status(200)
-    .message("OK")
-    .contentType("json")
-    .data(JSON.stringify(newUser))
-    .send();
+  response.ok().contentType("json").data(JSON.stringify(newUser)).send();
 }
 
 function bootstrap() {
