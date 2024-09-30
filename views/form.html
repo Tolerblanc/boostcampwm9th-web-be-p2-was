@@ -3,70 +3,73 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16" />
-    <link rel="stylesheet" href="/index.css" />
     <title>Web-BE-P2 WAS</title>
+    <link rel="stylesheet" href="index.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
-    <header class="flex align-center justify-between h-64 top-20 left-20 pb-40">
-      <h1 class="typo-bold-R">HELLO, WEB!</h1>
+
+  <body class="m-0 mx-[200px]">
+    <header class="flex items-center justify-between h-16 pb-10 pt-5 px-5">
+      <h1 class="text-lg font-medium">HELLO, WEB!</h1>
       <button
-        class="bg-color-primary color-white radius-8 pt-8 pr-16 pb-8 pl-16 top-20 left-20 gap-10 border-none"
+        class="bg-[#4362d0] text-white rounded-lg px-4 py-2 border-none focus:outline-none gap-2.5"
       >
         로그인/회원가입
       </button>
     </header>
-    <main class="flex flex-col align-center gap-40">
-      <div class="flex align-center h-148">
-        <h1 class="typo-display-R">회원 가입</h1>
+    <main class="flex flex-col items-center gap-10">
+      <div class="flex items-center h-36">
+        <h1 class="text-3xl font-medium">회원 가입</h1>
       </div>
       <form
-        class="flex flex-col align-center gap-16"
+        class="flex flex-col items-center gap-4"
         action="/create"
         method="get"
       >
         <div
-          class="box-border flex flex-col gap-8 border bolder-color-gray-100 pt-8 pr-16 pb-8 pl-16 rounded-lg w-320"
+          class="box-border flex flex-col gap-2 border border-[#d2dae0] p-4 rounded-lg w-80"
         >
-          <label for="email" class="typo-bold-S color-gray-300"> 이메일 </label>
+          <label for="email" class="text-sm font-medium text-[#4b5966]">
+            이메일
+          </label>
           <input
             type="text"
             id="email"
             name="email"
-            class="border-none"
+            class="border-none focus:outline-none"
             placeholder="이메일을 입력해주세요."
           />
         </div>
         <div
-          class="box-border flex flex-col gap-8 border bolder-color-gray-100 pt-8 pr-16 pb-8 pl-16 rounded-lg w-320"
+          class="box-border flex flex-col gap-2 border border-[#d2dae0] p-4 rounded-lg w-80"
         >
-          <label for="nickname" class="typo-bold-S color-gray-300">
+          <label for="nickname" class="text-sm font-medium text-[#4b5966]">
             닉네임
           </label>
           <input
             type="text"
             id="nickname"
             name="nickname"
-            class="border-none"
+            class="border-none focus:outline-none"
             placeholder="닉네임을 입력해주세요."
           />
         </div>
         <div
-          class="box-border flex flex-col gap-8 border bolder-color-gray-100 pt-8 pr-16 pb-8 pl-16 rounded-lg w-320"
+          class="box-border flex flex-col gap-2 border border-[#d2dae0] p-4 rounded-lg w-80"
         >
-          <label for="password" class="typo-bold-S color-gray-300">
+          <label for="password" class="text-sm font-medium text-[#4b5966]">
             비밀번호
           </label>
           <input
-            type="text"
+            type="password"
             id="password"
             name="password"
-            class="border-none"
+            class="border-none focus:outline-none"
             placeholder="비밀번호를 입력해주세요."
           />
         </div>
         <button
-          class="bg-color-primary color-white radius-8 pr-10 pl-10 gap-10 border-none w-320 h-40 mt-24"
+          class="bg-[#4362d0] text-white rounded-lg px-2.5 py-1.5 border-none w-80 h-10 mt-6 focus:outline-none"
           type="submit"
         >
           회원가입
