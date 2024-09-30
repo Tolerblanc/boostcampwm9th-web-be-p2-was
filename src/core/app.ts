@@ -24,6 +24,7 @@ class WasApplication {
 
   init() {
     this.middleware.use(async (request, response) => {
+      //TODO: static serving 미들웨어 분리, 존재하는 파일을 모두 라우터에 등록하는 로직 고려해보기
       const ext = extname(request.endpoint).slice(1).toLowerCase() as ExtName;
       if (ext) {
         if (!EXT_NAME.includes(ext)) {
@@ -36,6 +37,7 @@ class WasApplication {
 
     this.server = net.createServer((socket) => {
       socket.on("data", async (data) => {
+        //TODO: 버퍼 처리 로직 추가
         const request = new Request(data.toString());
         const response = new Response(socket);
         logger.info(request.toString());
