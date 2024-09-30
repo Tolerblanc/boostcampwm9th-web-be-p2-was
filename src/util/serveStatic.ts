@@ -25,9 +25,7 @@ async function serveStaticFile(req: Request, res: Response) {
 
   const data = await readFile(filePath);
 
-  res.contentType = CONTENT_TYPE[ext];
-  res.data = data.toString();
-  res.send();
+  res.contentType(CONTENT_TYPE[ext]).data(data.toString()).send();
 }
 
 export { serveStaticFile };

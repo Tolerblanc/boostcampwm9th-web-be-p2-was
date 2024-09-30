@@ -6,9 +6,12 @@ import { Response } from "@/core/response";
 async function createHandler(request: Request, response: Response) {
   const newUser = await createUser(request.query);
 
-  response.contentType = "json";
-  response.data = JSON.stringify(newUser);
-  response.send();
+  response
+    .status(200)
+    .message("OK")
+    .contentType("json")
+    .data(JSON.stringify(newUser))
+    .send();
 }
 
 function bootstrap() {

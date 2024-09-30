@@ -47,15 +47,15 @@ class WasApplication {
           const {
             status = 500,
             message = "Internal Server Error",
-
             stack,
           } = e as HttpError;
 
-          response.status = status;
-          response.message = message;
-          response.contentType = CONTENT_TYPE["txt"];
-          response.data = message;
-          response.send();
+          response
+            .status(status)
+            .message(message)
+            .contentType(CONTENT_TYPE["txt"])
+            .data(message)
+            .send();
 
           logger.error(`${request.method} ${request.uri}\n${stack}`);
         } finally {
