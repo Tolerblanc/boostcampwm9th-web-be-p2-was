@@ -5,6 +5,7 @@ class Response {
   private _status: number;
   private _message: string;
   private _contentType: string;
+  private _additionalHeaders: Record<string, string>;
   private _data: string;
 
   constructor(private _socket: net.Socket) {
@@ -12,6 +13,26 @@ class Response {
     this._message = "OK";
     this._contentType = CONTENT_TYPE.txt;
     this._data = "";
+    this._additionalHeaders = {};
+  }
+
+  ok() {
+    this._status = 200;
+    this._message = "OK";
+    return this;
+  }
+
+  created() {
+    this._status = 201;
+    this._message = "Created";
+    return this;
+  }
+
+  redirect(url: string) {
+    this._status = 302;
+    this._message = "Found";
+    this._additionalHeaders["Location"] = url;
+    return this;
   }
 
   status(status: number) {
