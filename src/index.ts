@@ -5,9 +5,9 @@ import { Response } from "@/core/response";
 
 async function createHandler(request: Request, response: Response) {
   //TODO: 컨트롤러로 분리
-  const newUser = await createUser(request.query);
+  const newUser = await createUser(request.body);
 
-  response.ok().contentType("json").data(JSON.stringify(newUser)).send();
+  response.created().contentType("json").data(JSON.stringify(newUser)).send();
 }
 
 function redirectToIndex(request: Request, response: Response) {
@@ -18,7 +18,7 @@ function bootstrap() {
   const app = new WasApplication();
 
   app.get("/", redirectToIndex);
-  app.get("/create", createHandler);
+  app.post("/create", createHandler);
 
   app.listen(3000);
 }
