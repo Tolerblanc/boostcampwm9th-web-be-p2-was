@@ -20,8 +20,8 @@ class Router {
     this.addRoute(path, "GET", handler);
   }
 
-  post() {
-    //TODO: POST 메서드 라우팅
+  post(path: string, handler: MiddlewareHandler) {
+    this.addRoute(path, "POST", handler);
   }
 
   put() {
