@@ -10,7 +10,9 @@
 
   <body class="m-0 mx-[200px]">
     <header class="flex items-center justify-between h-16 pb-10 pt-5 px-5">
-      <h1 class="text-lg font-medium">HELLO, WEB!</h1>
+      <h1 class="text-lg font-medium" onclick="location.href='/index.html'">
+        HELLO, WEB!
+      </h1>
       <button
         class="bg-[#4362d0] text-white rounded-lg px-4 py-2 border-none focus:outline-none gap-2.5"
       >
@@ -19,14 +21,16 @@
     </header>
     <main class="flex flex-col items-center gap-10">
       <div class="flex items-center h-36">
-        <h1 class="text-3xl font-medium">회원 가입</h1>
+        <h1 id="mainTitle" class="text-3xl font-medium">회원 가입</h1>
       </div>
       <form
+        id="signupForm"
         class="flex flex-col items-center gap-4"
         action="/create"
-        method="get"
+        method="post"
       >
         <div
+          id="emailContainer"
           class="box-border flex flex-col gap-2 border border-[#d2dae0] p-4 rounded-lg w-80"
         >
           <label for="email" class="text-sm font-medium text-[#4b5966]">
@@ -41,6 +45,7 @@
           />
         </div>
         <div
+          id="nicknameContainer"
           class="box-border flex flex-col gap-2 border border-[#d2dae0] p-4 rounded-lg w-80"
         >
           <label for="nickname" class="text-sm font-medium text-[#4b5966]">
@@ -55,6 +60,7 @@
           />
         </div>
         <div
+          id="passwordContainer"
           class="box-border flex flex-col gap-2 border border-[#d2dae0] p-4 rounded-lg w-80"
         >
           <label for="password" class="text-sm font-medium text-[#4b5966]">
@@ -69,6 +75,7 @@
           />
         </div>
         <button
+          id="submitButton"
           class="bg-[#4362d0] text-white rounded-lg px-2.5 py-1.5 border-none w-80 h-10 mt-6 focus:outline-none"
           type="submit"
         >
@@ -76,5 +83,40 @@
         </button>
       </form>
     </main>
+
+    <script>
+      document
+        .getElementById("signupForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // TODO: 서버로 데이터 전송 및 응답 처리
+          const success = true;
+
+          if (success) {
+            document.getElementById("passwordContainer").remove();
+
+            ["email", "nickname"].forEach((id) => {
+              const input = document.getElementById(id);
+              input.disabled = true;
+              input.style.backgroundColor = "#F5F7F9";
+              const container = document.getElementById(`${id}Container`);
+              container.style.backgroundColor = "#F5F7F9";
+            });
+
+            // 버튼 텍스트 변경 및 링크 설정
+            const button = document.getElementById("submitButton");
+            button.textContent = "지금 로그인하기";
+            button.onclick = function () {
+              window.location.href = "/login.html";
+            };
+
+            document.getElementById("mainTitle").textContent =
+              "가입이 완료되었습니다!";
+          } else {
+            // TODO: 실패 시 예외 처리
+          }
+        });
+    </script>
   </body>
 </html>
