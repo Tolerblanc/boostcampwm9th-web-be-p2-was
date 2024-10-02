@@ -8,12 +8,17 @@ class Response {
   private _additionalHeaders: Record<string, string>;
   private _data: string;
 
+  // 요청이 완료되었는가
+  // TODO: 미들웨어 체인을 개선하여 없애보기
+  private _isSent: boolean;
+
   constructor(private _socket: net.Socket) {
     this._status = 200;
     this._message = "OK";
     this._contentType = CONTENT_TYPE.txt;
     this._data = "";
     this._additionalHeaders = {};
+    this._isSent = false;
   }
 
   ok() {
@@ -63,6 +68,11 @@ class Response {
     });
     this._socket.write("\r\n");
     if (this._data) this._socket.write(this._data);
+    this._isSent = true;
+  }
+
+  get isSent() {
+    return this._isSent;
   }
 }
 
