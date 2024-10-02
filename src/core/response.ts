@@ -58,6 +58,9 @@ class Response {
   send() {
     this._socket.write(`HTTP/1.1 ${this._status} ${this._message}\r\n`);
     this._socket.write(`Content-Type: ${this._contentType}\r\n`);
+    Object.entries(this._additionalHeaders).forEach(([key, value]) => {
+      this._socket.write(`${key}: ${value}\r\n`);
+    });
     this._socket.write("\r\n");
     if (this._data) this._socket.write(this._data);
   }
