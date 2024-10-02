@@ -1,7 +1,11 @@
 import net from "node:net";
 import { extname } from "node:path";
 
-import { HttpError, UnsupportedMediaTypeError } from "@/util/httpError";
+import {
+  HttpError,
+  NotFoundError,
+  UnsupportedMediaTypeError,
+} from "@/util/httpError";
 import { logger } from "@/util/logger";
 import { CONTENT_TYPE, EXT_NAME, ExtName } from "@/constants/contentType.enum";
 import { serveStaticFile } from "@/util/serveStatic";
@@ -45,6 +49,10 @@ class WasApplication {
         try {
           await this.middleware.handle(request, response);
           await this.router.handle(request, response);
+          if (!response.isSent) {
+            //TODO: 미들웨어로 예외 처리 로직 분리
+            throw new NotFoundError();
+          }
         } catch (e) {
           const {
             status = 500,
