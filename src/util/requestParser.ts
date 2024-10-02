@@ -15,7 +15,7 @@ function parseQueryParameters(str: string | undefined) {
 }
 
 function parseRequestData(data: string) {
-  const [requestHeader] = data.toString().split("\r\n\r\n");
+  const [requestHeader, body] = data.toString().split("\r\n\r\n");
   const [firstLine] = requestHeader.split("\r\n");
   const [method, uri, protocol] = firstLine.split(" ");
 
@@ -23,7 +23,7 @@ function parseRequestData(data: string) {
 
   const query = parseQueryParameters(queryString);
 
-  return { protocol, method, uri, endpoint, query };
+  return { protocol, method, uri, endpoint, query, body };
 }
 
 export { parseRequestData };
