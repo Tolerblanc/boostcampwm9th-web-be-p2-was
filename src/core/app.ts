@@ -8,13 +8,7 @@ import { Request } from "@/core/request";
 import { Response } from "@/core/response";
 import { Router } from "@/core/router";
 import { handleStaticFileRoute } from "@/core/builtin/staticFile.middleware";
-
-// TODO: 클래스로 분리
-type ConnectionBuffer = {
-  data: Buffer;
-  size: number;
-  maxSize: number;
-};
+import { ConnectionBuffer } from "@/core/connectionBuffer";
 
 class WasApplication {
   private middleware: Middleware;
@@ -33,11 +27,9 @@ class WasApplication {
     this.middleware.use(handleStaticFileRoute);
 
     this.server = net.createServer((socket) => {
-      const connectionBuffer: ConnectionBuffer = {
-        data: Buffer.alloc(0),
-        size: 0,
-        maxSize: 1024 * 1024 * 10, // TODO: 환경변수로 관리
-      };
+      const connectionBuffer = new ConnectionBuffer();
+
+      socket.setTimeout(30000);
 
       socket.on("timeout", () => {
         logger.error(
@@ -47,7 +39,7 @@ class WasApplication {
       });
 
       socket.on("data", async (chunk) => {
-        if (connectionBuffer.size + chunk.length > connectionBuffer.maxSize) {
+        if (!connectionBuffer.addChunk(chunk)) {
           logger.error(
             `Connection Buffer Overflow ${socket.remoteAddress}:${socket.remotePort}`
           );
@@ -55,18 +47,14 @@ class WasApplication {
           return;
         }
 
-        connectionBuffer.data = Buffer.concat([connectionBuffer.data, chunk]);
-        connectionBuffer.size += chunk.length;
-
-        if (this.isCompleteHttpRequest(connectionBuffer)) {
-          this.processHttpRequest(socket, connectionBuffer);
-          connectionBuffer.data = Buffer.alloc(0);
-          connectionBuffer.size = 0;
+        if (connectionBuffer.isCompleteHttpRequest()) {
+          await this.processHttpRequest(socket, connectionBuffer);
+          connectionBuffer.clear();
         }
       });
 
       socket.on("end", () => {
-        if (connectionBuffer.size > 0) {
+        if (connectionBuffer.getData().length > 0) {
           logger.error(
             `Connection End ${socket.remoteAddress}:${socket.remotePort}`
           );
@@ -75,27 +63,11 @@ class WasApplication {
     });
   }
 
-  private isCompleteHttpRequest(connectionBuffer: ConnectionBuffer) {
-    const str = connectionBuffer.data.toString();
-    const headerEnd = str.indexOf("\r\n\r\n");
-
-    if (headerEnd === -1) return false;
-
-    const contentLengthMatch = str.match(/Content-Length: (\d+)/i);
-    if (contentLengthMatch) {
-      const contentLength = parseInt(contentLengthMatch[1], 10);
-      return connectionBuffer.data.length >= headerEnd + 4 + contentLength;
-    }
-
-    // * Content-Length 헤더가 없는 경우, 헤더의 끝을 요청의 끝으로 간주
-    return true;
-  }
-
   private async processHttpRequest(
     socket: net.Socket,
     connectionBuffer: ConnectionBuffer
   ) {
-    const request = new Request(connectionBuffer.data.toString());
+    const request = new Request(connectionBuffer.getData().toString());
     const response = new Response(socket);
 
     logger.info(request.toString());
