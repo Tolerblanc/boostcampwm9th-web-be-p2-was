@@ -1,8 +1,8 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
-import { getDirname } from "@/util/getDirname";
-import { BadRequestError, ConflictError } from "@/util/httpError";
+import { getDirname } from "@/core/util/getDirname";
+import { BadRequestError, ConflictError } from "@/core/util/httpError";
 
 type User = {
   nickname: string;

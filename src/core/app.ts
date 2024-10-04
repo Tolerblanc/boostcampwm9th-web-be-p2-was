@@ -1,6 +1,6 @@
 import net from "node:net";
 
-import { HttpError, NotFoundError } from "@/util/httpError";
+import { HttpError, NotFoundError } from "@/core/util/httpError";
 import { logger } from "@/util/logger";
 import { CONTENT_TYPE } from "@/constants/contentType.enum";
 import { Middleware, MiddlewareHandler } from "@/core/middleware";

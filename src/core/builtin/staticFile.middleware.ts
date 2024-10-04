@@ -1,8 +1,11 @@
 import { join, extname } from "node:path";
 import { readFile, access, constants } from "node:fs/promises";
 
-import { getDirname } from "@/util/getDirname";
-import { NotFoundError, UnsupportedMediaTypeError } from "@/util/httpError";
+import { getDirname } from "@/core/util/getDirname";
+import {
+  NotFoundError,
+  UnsupportedMediaTypeError,
+} from "@/core/util/httpError";
 import { CONTENT_TYPE, EXT_NAME, ExtName } from "@/constants/contentType.enum";
 import { Request } from "@/core/request";
 import { Response } from "@/core/response";
