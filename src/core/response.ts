@@ -55,8 +55,8 @@ class Response {
     return this;
   }
 
-  data(data: string) {
-    this._data = data;
+  data(data: object | string) {
+    this._data = typeof data === "object" ? JSON.stringify(data) : data;
     return this;
   }
 

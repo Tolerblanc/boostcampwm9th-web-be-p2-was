@@ -7,7 +7,7 @@ async function createHandler(request: Request, response: Response) {
   //TODO: 컨트롤러로 분리
   const newUser = await createUser(request.body);
 
-  response.created().contentType("json").data(JSON.stringify(newUser)).send();
+  response.created().contentType("json").data(newUser).send();
 }
 
 function redirectToIndex(request: Request, response: Response) {
