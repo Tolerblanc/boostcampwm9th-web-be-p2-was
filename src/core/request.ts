@@ -20,13 +20,10 @@ class Request {
   }
 
   private parseBody(body: string) {
-    //! 쿼리 파라미터 형태의 데이터가 x-www-form-urlencoded or json 형식으로 전달된다고 가정
-    //TODO: 다양한 형식의 데이터 처리 로직 고려
-    return body.split("&").reduce<Record<string, string>>((acc, cur) => {
-      const [key, value] = cur.split("=");
-      acc[key] = value;
-      return acc;
-    }, {});
+    // ! JSON 형태로 데이터가 들어온다고 가정
+    // TODO: GET 요청에서 body가 들어오는 경우 무시하도록 처리
+    if (body) return JSON.parse(body);
+    else return {};
   }
 
   toString() {
