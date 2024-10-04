@@ -5,6 +5,7 @@
   "scripts": {
     "start": "tsx ./src/index.ts",
     "start:dev": "nodemon",
+    "start:debug": "node --import tsx ./src/index.ts",
     "test": "jest"
   },
   "devDependencies": {
