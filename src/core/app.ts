@@ -39,7 +39,7 @@ class WasApplication {
       });
 
       socket.on("data", async (chunk) => {
-        if (!connectionBuffer.addChunk(chunk)) {
+        if (connectionBuffer.addChunk(chunk) === -1) {
           logger.error(
             `Connection Buffer Overflow ${socket.remoteAddress}:${socket.remotePort}`
           );
@@ -54,7 +54,7 @@ class WasApplication {
       });
 
       socket.on("end", () => {
-        if (connectionBuffer.getData().length > 0) {
+        if (connectionBuffer.size > 0) {
           logger.error(
             `Connection End ${socket.remoteAddress}:${socket.remotePort}`
           );
@@ -67,7 +67,7 @@ class WasApplication {
     socket: net.Socket,
     connectionBuffer: ConnectionBuffer
   ) {
-    const request = new Request(connectionBuffer.getData().toString());
+    const request = new Request(connectionBuffer.toString());
     const response = new Response(socket);
 
     logger.info(request.toString());
