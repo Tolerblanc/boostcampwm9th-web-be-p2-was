@@ -46,4 +46,4 @@ async function createUser(query: Record<string, string>) {
   return { email, nickname };
 }
 
-export { createUser };
+export { createUser, type User };
