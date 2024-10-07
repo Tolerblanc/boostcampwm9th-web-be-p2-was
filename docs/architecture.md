@@ -1,3 +1,105 @@
+- 클래스 다이어그램
+
+```mermaid
+classDiagram
+    class WasApplication {
+        -router: Router
+        -globalMiddlewares: MiddlewareFunction[]
+        +use(middleware: MiddlewareFunction)
+        +registerControllers(controllers: any[])
+        +handleRequest(req: Request, res: Response)
+        +listen(port: number)
+    }
+
+    class Router {
+        -root: Node
+        +addRoute(method: string, path: string, handlers: RouteHandler[])
+        +handle(req: Request, res: Response)
+        -runMiddleware(req: Request, res: Response, handlers: MiddlewareFunction[])
+        -findNode(node: Node, parts: string[], params: object)
+    }
+
+    class Node {
+        +children: Map~string, Node~
+        +paramChild: Node
+        +handlers: Map~string, RouteHandler[]~
+        +paramName: string
+    }
+
+    class Request {
+        +protocol: string
+        +method: string
+        +path: string
+        +query: object
+        +headers: object
+        +body: object
+        +params: object
+    }
+
+    class Response {
+        -socket: net.Socket
+        +status(code: number)
+        +send(body: string)
+        +json(body: object)
+    }
+
+    class Controller {
+        <<abstract>>
+    }
+
+    WasApplication --> Router
+    Router --> Node
+    WasApplication --> Request
+    WasApplication --> Response
+    WasApplication --> Controller
+
+    class Decorators {
+        <<interface>>
+        +Controller(prefix: string)
+        +Get(path: string)
+        +Post(path: string)
+        +Delete(path: string)
+        +Put(path: string)
+        +Patch(path: string)
+        +Use(middlewares: MiddlewareFunction[])
+    }
+
+    Controller ..|> Decorators
+
+    class MiddlewareFunction {
+        <<interface>>
+    }
+
+    WasApplication --> MiddlewareFunction
+    Router --> MiddlewareFunction
+```
+
+- 시퀀스 다이어그램 (흐름도)
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant WasApplication
+    participant Router
+    participant Controller
+    participant Middleware
+    participant Handler
+
+    Client->>WasApplication: HTTP Request
+    WasApplication->>Router: handleRequest(req, res)
+    Router->>Router: findNode(path)
+    Router->>Middleware: Global Middleware
+    Middleware->>Middleware: Controller-level Middleware
+    Middleware->>Middleware: Method-level Middleware
+    Middleware->>Handler: Execute Handler
+    Handler->>Router: Response
+    Router->>WasApplication: Response
+    WasApplication->>Client: HTTP Response
+```
+
+<details>
+  <summary>이전버전</summary>
+
 # 요구 기능 목록 (Week 05)
 
 - 정적 UI
@@ -74,3 +176,5 @@
 - 2차 설계 개선
 
 ![image](https://github.com/user-attachments/assets/960c325b-3391-487b-8465-53411f491f3a)
+
+</details>
