@@ -4,16 +4,18 @@ class Request {
   accessor uri: string;
   accessor endpoint: string;
   accessor query: Record<string, string>;
+  accessor headers: Record<string, string>;
   accessor body: Record<string, string>;
 
   constructor(data: string) {
-    const { protocol, method, uri, endpoint, query, body } =
+    const { protocol, method, uri, endpoint, query, body, headers } =
       this.parseRequestData(data);
     this.protocol = protocol;
     this.method = method;
     this.uri = uri;
     this.endpoint = endpoint;
     this.query = query;
+    this.headers = headers;
     this.body = this.parseBody(body);
   }
 
@@ -42,14 +44,19 @@ class Request {
 
   private parseRequestData(data: string) {
     const [requestHeader, body] = data.toString().split("\r\n\r\n");
-    const [firstLine] = requestHeader.split("\r\n");
+    const [firstLine, ...remainders] = requestHeader.split("\r\n");
+    const headers = remainders.reduce<Record<string, string>>((acc, cur) => {
+      const [key, value] = cur.split(": ");
+      acc[key] = value;
+      return acc;
+    }, {});
     const [method, uri, protocol] = firstLine.split(" ");
 
     const [endpoint, queryString] = uri.split("?");
 
     const query = this.parseQueryParameters(queryString);
 
-    return { protocol, method, uri, endpoint, query, body };
+    return { protocol, method, uri, endpoint, query, body, headers };
   }
 
   toString() {
