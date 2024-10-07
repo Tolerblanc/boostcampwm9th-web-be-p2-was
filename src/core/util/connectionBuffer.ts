@@ -1,30 +1,30 @@
 class ConnectionBuffer {
-  private data: Buffer;
-  private size: number;
+  private _data: Buffer;
+  private _size: number;
   private readonly maxSize: number;
 
   constructor(maxSize: number = 1024 * 1024 * 10) {
-    this.data = Buffer.alloc(0);
-    this.size = 0;
+    this._data = Buffer.alloc(0);
+    this._size = 0;
     this.maxSize = maxSize;
   }
 
-  addChunk(chunk: Buffer): boolean {
-    if (this.size + chunk.length > this.maxSize) {
-      return false;
+  addChunk(chunk: Buffer): number {
+    if (this._size + chunk.length > this.maxSize) {
+      return -1;
     }
-    this.data = Buffer.concat([this.data, chunk]);
-    this.size += chunk.length;
-    return true;
+    this._data = Buffer.concat([this._data, chunk]);
+    this._size += chunk.length;
+    return chunk.length;
   }
 
   clear() {
-    this.data = Buffer.alloc(0);
-    this.size = 0;
+    this._data = Buffer.alloc(0);
+    this._size = 0;
   }
 
   isCompleteHttpRequest(): boolean {
-    const str = this.data.toString();
+    const str = this._data.toString();
     const headerEnd = str.indexOf("\r\n\r\n");
 
     if (headerEnd === -1) return false;
@@ -32,14 +32,18 @@ class ConnectionBuffer {
     const contentLengthMatch = str.match(/Content-Length: (\d+)/i);
     if (contentLengthMatch) {
       const contentLength = parseInt(contentLengthMatch[1], 10);
-      return this.data.length >= headerEnd + 4 + contentLength;
+      return this._data.length >= headerEnd + 4 + contentLength;
     }
 
     return true;
   }
 
-  getData(): Buffer {
-    return this.data;
+  get size(): number {
+    return this._size;
+  }
+
+  toString(): string {
+    return this._data.toString();
   }
 }
 
