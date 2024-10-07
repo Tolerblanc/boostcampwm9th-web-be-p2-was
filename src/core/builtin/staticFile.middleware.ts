@@ -5,10 +5,10 @@ import { getDirname } from "@/core/util/getDirname";
 import {
   NotFoundError,
   UnsupportedMediaTypeError,
-} from "@/core/util/httpError";
-import { CONTENT_TYPE, EXT_NAME, ExtName } from "@/constants/contentType.enum";
-import { Request } from "@/core/request";
-import { Response } from "@/core/response";
+} from "@/core/http/httpError";
+import { CONTENT_TYPE, EXT_NAME, ExtName } from "@/core/http/contentType.enum";
+import { Request } from "@/core/http/request";
+import { Response } from "@/core/http/response";
 
 const __dirname = getDirname(import.meta.url);
 

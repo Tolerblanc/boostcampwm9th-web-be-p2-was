@@ -1,14 +1,14 @@
 import net from "node:net";
 
-import { HttpError, NotFoundError } from "@/core/util/httpError";
+import { HttpError, NotFoundError } from "@/core/http/httpError";
 import { logger } from "@/util/logger";
-import { CONTENT_TYPE } from "@/constants/contentType.enum";
-import { Middleware, MiddlewareHandler } from "@/core/middleware";
-import { Request } from "@/core/request";
-import { Response } from "@/core/response";
-import { Router } from "@/core/router";
+import { CONTENT_TYPE } from "@/core/http/contentType.enum";
+import { Middleware, MiddlewareHandler } from "@/core/util/middleware";
+import { Request } from "@/core/http/request";
+import { Response } from "@/core/http/response";
+import { Router } from "@/core/util/router";
 import { handleStaticFileRoute } from "@/core/builtin/staticFile.middleware";
-import { ConnectionBuffer } from "@/core/connectionBuffer";
+import { ConnectionBuffer } from "@/core/util/connectionBuffer";
 
 class WasApplication {
   private middleware: Middleware;

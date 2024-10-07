@@ -1,8 +1,8 @@
 import { WasApplication } from "./core/app";
-import { createUser } from "./users/createUser";
-import { Request } from "@/core/request";
-import { Response } from "@/core/response";
-import { login } from "./users/login";
+import { createUser } from "./user/createUser";
+import { Request } from "@/core/http/request";
+import { Response } from "@/core/http/response";
+import { login } from "./user/login";
 
 async function createHandler(request: Request, response: Response) {
   //TODO: 컨트롤러로 분리

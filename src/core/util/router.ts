@@ -1,6 +1,6 @@
-import { MiddlewareHandler } from "@/core/middleware";
-import { Request } from "@/core/request";
-import { Response } from "@/core/response";
+import { MiddlewareHandler } from "@/core/util/middleware";
+import { Request } from "@/core/http/request";
+import { Response } from "@/core/http/response";
 
 class Router {
   private routeTable: Map<string, Map<string, MiddlewareHandler>>; // URI, <Method, Handler>

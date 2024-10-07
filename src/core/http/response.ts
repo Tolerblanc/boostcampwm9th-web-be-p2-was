@@ -1,4 +1,4 @@
-import { CONTENT_TYPE } from "@/constants/contentType.enum";
+import { CONTENT_TYPE } from "@/core/http/contentType.enum";
 import net from "node:net";
 
 type CookieOptions = {

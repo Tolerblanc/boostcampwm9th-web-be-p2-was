@@ -1,5 +1,5 @@
-import { Request } from "@/core/request";
-import { Response } from "@/core/response";
+import { Request } from "@/core/http/request";
+import { Response } from "@/core/http/response";
 
 type MiddlewareHandler = (
   req: Request,

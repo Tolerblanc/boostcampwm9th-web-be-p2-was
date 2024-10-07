@@ -2,7 +2,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import { getDirname } from "@/core/util/getDirname";
-import { BadRequestError, ConflictError } from "@/core/util/httpError";
+import { BadRequestError, ConflictError } from "@/core/http/httpError";
 
 type User = {
   nickname: string;

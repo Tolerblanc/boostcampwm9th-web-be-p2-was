@@ -3,7 +3,7 @@ import { join } from "path";
 
 import { getDirname } from "@/core/util/getDirname";
 import { User } from "./createUser";
-import { BadRequestError, UnauthorizedError } from "@/core/util/httpError";
+import { BadRequestError, UnauthorizedError } from "@/core/http/httpError";
 
 const __dirname = getDirname(import.meta.url);
 
