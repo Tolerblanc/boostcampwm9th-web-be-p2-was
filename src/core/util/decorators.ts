@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Middleware } from "@/core/util/middleware";
+import { MiddlewareFunction } from "@/core/util/middleware";
 
 function Controller(prefix: string = ""): ClassDecorator {
   return function (constructor: Function) {
@@ -62,7 +62,7 @@ function Delete(path: string): MethodDecorator {
   };
 }
 
-function UseMiddleware(...middlewares: Middleware[]): MethodDecorator {
+function UseMiddleware(...middlewares: MiddlewareFunction[]): MethodDecorator {
   return function (
     target: any,
     propertyKey: string | symbol,
