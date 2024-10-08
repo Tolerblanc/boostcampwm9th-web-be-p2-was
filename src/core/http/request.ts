@@ -1,66 +1,49 @@
 class Request {
   accessor protocol: string;
   accessor method: string;
-  accessor uri: string;
-  accessor endpoint: string;
+  accessor path: string;
   accessor query: Record<string, string>;
   accessor headers: Record<string, string>;
-  accessor body: Record<string, string>;
+  accessor body: Record<string, string>; // ? 본래 Body는 여러 타입이 올 수 있지만, JSON 만 받는다고 가정
+  accessor params: Record<string, string>;
 
   constructor(data: string) {
-    const { protocol, method, uri, endpoint, query, body, headers } =
+    const { protocol, method, path, query, body, headers } =
       this.parseRequestData(data);
     this.protocol = protocol;
     this.method = method;
-    this.uri = uri;
-    this.endpoint = endpoint;
+    this.path = path;
     this.query = query;
     this.headers = headers;
     this.body = this.parseBody(body);
+    this.params = {};
   }
 
   private parseBody(body: string) {
-    // ! JSON 형태로 데이터가 들어온다고 가정
-    // TODO: GET 요청에서 body가 들어오는 경우 무시하도록 처리
-    if (body) return JSON.parse(body);
-    else return {};
+    if (this.method === "GET" || this.method === "DELETE" || !body) return {};
+    return JSON.parse(body);
   }
 
   private parseQueryParameters(str: string | undefined) {
-    if (!str) {
-      return {};
-    }
-
-    const queries = str.split("&").map((data) => data.split("="));
-
-    return queries.reduce<Record<string, string>>((acc, cur) => {
-      const [key, value] = cur;
-
-      acc[key] = value;
-
-      return acc;
-    }, {});
+    if (!str) return {};
+    return Object.fromEntries(new URLSearchParams(str));
   }
 
   private parseRequestData(data: string) {
     const [requestHeader, body] = data.toString().split("\r\n\r\n");
     const [firstLine, ...remainders] = requestHeader.split("\r\n");
-    const headers = remainders.reduce<Record<string, string>>((acc, cur) => {
-      const [key, value] = cur.split(": ");
-      acc[key] = value;
-      return acc;
-    }, {});
-    const [method, uri, protocol] = firstLine.split(" ");
-
-    const [endpoint, queryString] = uri.split("?");
-
+    const headers = Object.fromEntries(
+      remainders.map((line) => line.split(": "))
+    );
+    const [method, fullPath, protocol] = firstLine.split(" ");
+    const [path, queryString] = fullPath.split("?");
     const query = this.parseQueryParameters(queryString);
 
-    return { protocol, method, uri, endpoint, query, body, headers };
+    return { protocol, method, path, query, body, headers };
   }
 
   toString() {
-    return `${this.protocol} ${this.method} ${this.uri}`;
+    return `${this.method} ${this.path} ${this.protocol}`;
   }
 }
 
