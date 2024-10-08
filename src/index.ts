@@ -2,7 +2,9 @@ import { WasApplication } from "./core/app";
 import { createUser } from "./user/createUser";
 import { Request } from "@/core/http/request";
 import { Response } from "@/core/http/response";
-import { login } from "./user/login";
+import { login } from "@/user/login";
+import { UserController } from "@/user/user.controller";
+import { handleStaticFileRoute } from "./core/builtin/staticFile.middleware";
 
 async function createHandler(request: Request, response: Response) {
   //TODO: 컨트롤러로 분리
@@ -23,9 +25,8 @@ function redirectToIndex(request: Request, response: Response) {
 function bootstrap() {
   const app = new WasApplication();
 
-  app.get("/", redirectToIndex);
-  app.post("/create", createHandler);
-  app.post("/login", loginHandler);
+  app.use(handleStaticFileRoute);
+  app.registerControllers(UserController);
 
   app.listen(3000);
 }
