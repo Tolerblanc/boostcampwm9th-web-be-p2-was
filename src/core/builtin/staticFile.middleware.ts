@@ -13,7 +13,7 @@ import { Response } from "@/core/http/response";
 const __dirname = getDirname(import.meta.url);
 
 async function handleStaticFileRoute(request: Request, response: Response) {
-  const ext = extname(request.endpoint).slice(1).toLowerCase() as ExtName;
+  const ext = extname(request.path).slice(1).toLowerCase() as ExtName;
   if (ext) {
     if (!EXT_NAME.includes(ext)) {
       throw new UnsupportedMediaTypeError();
@@ -24,12 +24,12 @@ async function handleStaticFileRoute(request: Request, response: Response) {
 }
 
 async function serveStaticFile(req: Request, res: Response) {
-  const ext = extname(req.uri).slice(1).toLowerCase() as ExtName;
+  const ext = extname(req.path).slice(1).toLowerCase() as ExtName;
 
   const dir = ext === "html" ? "views" : "static";
 
   const rootDir = join(__dirname, "../../../");
-  const filePath = join(rootDir, `/${dir}`, req.uri);
+  const filePath = join(rootDir, `/${dir}`, req.path);
 
   try {
     await access(filePath, constants.R_OK);

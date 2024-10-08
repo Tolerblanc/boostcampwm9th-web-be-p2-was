@@ -1,7 +1,7 @@
 import { MiddlewareFunction } from "@/core/util/middleware";
 import { Request } from "@/core/http/request";
 import { Response } from "@/core/http/response";
-import { NotFoundError } from "@/core/http/httpError";
+import { handleStaticFileRoute } from "@/core/builtin/staticFile.middleware";
 
 type RouteHandler = MiddlewareFunction;
 
@@ -61,7 +61,7 @@ class Router {
       req.params = params;
       await this.runMiddleware(req, res, node.handlers[req.method]);
     } else {
-      throw new NotFoundError();
+      await this.runMiddleware(req, res, [handleStaticFileRoute]);
     }
   }
 
