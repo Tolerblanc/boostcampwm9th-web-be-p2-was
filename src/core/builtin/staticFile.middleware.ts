@@ -1,7 +1,7 @@
-import { join, extname } from "node:path";
+import { join, extname, dirname } from "node:path";
 import { readFile, access, constants } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 
-import { getDirname } from "@/core/util/getDirname";
 import {
   NotFoundError,
   UnsupportedMediaTypeError,
@@ -10,7 +10,7 @@ import { CONTENT_TYPE, EXT_NAME, ExtName } from "@/core/http/contentType.enum";
 import { Request } from "@/core/http/request";
 import { Response } from "@/core/http/response";
 
-const __dirname = getDirname(import.meta.url);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 async function handleStaticFileRoute(request: Request, response: Response) {
   const ext = extname(request.path).slice(1).toLowerCase() as ExtName;
