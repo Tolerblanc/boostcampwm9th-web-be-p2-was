@@ -16,6 +16,7 @@
     "@types/eslint__js": "^8.42.3",
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/jest": "^29.5.12",
+    "@types/node": "^22.7.5",
     "babel-cli": "^6.26.0",
     "babel-jest": "^29.7.0",
     "eslint": "^9.11.0",
@@ -30,6 +31,8 @@
     "winston": "^3.14.2"
   },
   "dependencies": {
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.20"
   }
 }
