@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { WasApplication } from "./core/app";
 import { UserController } from "@/user/user.controller";
 import { IndexController } from "@/index.controller";

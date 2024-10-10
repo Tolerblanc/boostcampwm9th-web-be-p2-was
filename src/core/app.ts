@@ -10,6 +10,7 @@ import { Router } from "@/core/util/router";
 import { ConnectionBuffer } from "@/core/util/connectionBuffer";
 import { RouteDefinition } from "@/core/util/decorators";
 import { MiddlewareFunction } from "@/core/util/middleware";
+import { dataSource } from "./util/dataSource";
 
 class WasApplication {
   private router: Router;
@@ -52,6 +53,10 @@ class WasApplication {
   }
 
   init() {
+    dataSource.initialize().then(() => {
+      logger.info("데이터베이스 연결 성공");
+    });
+
     this.server = net.createServer((socket) => {
       const connectionBuffer = new ConnectionBuffer();
 
