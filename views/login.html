@@ -100,7 +100,7 @@
           password: passwordInput.value,
         };
 
-        fetch("/login", {
+        fetch("/user/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -110,6 +110,7 @@
         })
           .then((response) => {
             if (response.ok) {
+              localStorage.setItem("token", response.body.token);
               window.location.href = response.url;
             } else {
               // 로그인 실패 시 처리
