@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Board } from "@/board/board.entity";
+import { Comment } from "@/comment/comment.entity";
 
 @Entity()
 class User {
@@ -30,6 +31,9 @@ class User {
 
   @OneToMany(() => Board, (board) => board.author)
   boards!: Board[];
+
+  @OneToMany(() => Comment, (comment) => comment.author)
+  comments!: Comment[];
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);

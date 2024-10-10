@@ -1,12 +1,15 @@
-import { User } from "@/user/user.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+
+import { User } from "@/user/user.entity";
+import { Comment } from "@/comment/comment.entity";
 
 @Entity()
 class Board {
@@ -27,6 +30,9 @@ class Board {
 
   @ManyToOne(() => User, (user) => user.boards)
   author!: User;
+
+  @OneToMany(() => Comment, (comment) => comment.board)
+  comments!: Comment[];
 }
 
 export { Board };
