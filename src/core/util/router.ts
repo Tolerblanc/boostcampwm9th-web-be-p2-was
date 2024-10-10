@@ -23,25 +23,37 @@ class Node {
 class Router {
   private root: Node = new Node();
 
-  addRoute(method: string, path: string, handlers: RouteHandler[]) {
-    let node = this.root;
-    const parts = path.split("/").filter((part) => part.length > 0);
-    for (const part of parts) {
-      // 동적 라우팅 경로라면
-      // ? 더 깔끔하게 작성할 수 없을까?
-      if (part.startsWith(":")) {
-        if (!node.paramChild) {
-          node.paramChild = new Node();
-          node.paramChild.paramName = part.slice(1);
-        }
-        node = node.paramChild;
-      } else {
-        if (!node.children[part]) {
-          node.children[part] = new Node();
-        }
-        node = node.children[part];
-      }
+  private getOrCreateChildNode(currentNode: Node, part: string): Node {
+    if (this.isDynamicRoute(part)) {
+      return this.getOrCreateParamChild(currentNode, part);
     }
+    return this.getOrCreateStaticChild(currentNode, part);
+  }
+
+  private isDynamicRoute(part: string): boolean {
+    return part.startsWith(":");
+  }
+
+  private getOrCreateParamChild(node: Node, part: string): Node {
+    if (!node.paramChild) {
+      node.paramChild = new Node();
+      node.paramChild.paramName = part.slice(1);
+    }
+    return node.paramChild;
+  }
+
+  private getOrCreateStaticChild(node: Node, part: string): Node {
+    if (!node.children[part]) {
+      node.children[part] = new Node();
+    }
+    return node.children[part];
+  }
+
+  private addHandlersToNode(
+    node: Node,
+    method: string,
+    handlers: RouteHandler[]
+  ) {
     if (!node.handlers) {
       node.handlers = {};
     }
@@ -49,6 +61,17 @@ class Router {
       node.handlers[method] = [];
     }
     node.handlers[method].push(...handlers);
+  }
+
+  addRoute(method: string, path: string, handlers: RouteHandler[]) {
+    let currentNode = this.root;
+    const parts = path.split("/").filter(Boolean);
+
+    for (const part of parts) {
+      currentNode = this.getOrCreateChildNode(currentNode, part);
+    }
+
+    this.addHandlersToNode(currentNode, method, handlers);
   }
 
   async handle(req: Request, res: Response) {
