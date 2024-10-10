@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import "reflect-metadata";
 import { MiddlewareFunction } from "@/core/util/middleware";
 
