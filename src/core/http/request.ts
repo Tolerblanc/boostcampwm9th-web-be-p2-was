@@ -5,7 +5,7 @@ class Request {
   accessor query: Record<string, string>;
   accessor headers: Record<string, string>;
   accessor body: Record<string, string>; // ? 본래 Body는 여러 타입이 올 수 있지만, JSON 만 받는다고 가정
-  accessor params: Record<string, string>;
+  accessor params: Record<string, string | number | boolean>;
 
   constructor(data: string) {
     const { protocol, method, path, query, body, headers } =

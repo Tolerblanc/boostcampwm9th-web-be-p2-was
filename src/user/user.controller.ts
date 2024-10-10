@@ -1,8 +1,9 @@
-import { Controller, Get, Post } from "@/core/util/decorators";
+import { Controller, Get, Post, UseMiddleware } from "@/core/util/decorators";
 import { Request } from "@/core/http/request";
 import { Response } from "@/core/http/response";
 import { UserService } from "@/user/user.service";
 import { UserRepository } from "@/user/user.repository";
+import { AuthMiddleware } from "@/core/builtin/auth.middleware";
 
 @Controller("/user")
 class UserController {
@@ -13,6 +14,7 @@ class UserController {
   }
 
   @Get("/list")
+  @UseMiddleware(AuthMiddleware)
   async getUsers(req: Request, res: Response): Promise<void> {
     const users = await this.userService.getUserList();
     res.status(200).data(users).send();
@@ -21,7 +23,14 @@ class UserController {
   @Post("/login")
   async login(req: Request, res: Response): Promise<void> {
     const token = await this.userService.login(req.body);
-    res.redirect("/").data({ token }).send();
+    res
+      .ok()
+      .contentType("json")
+      .data({
+        redirectUrl: req.query.redirectUrl ?? "/",
+        token,
+      })
+      .send();
   }
 
   @Post("/create")
