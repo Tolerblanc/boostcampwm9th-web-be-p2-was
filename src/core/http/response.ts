@@ -84,6 +84,11 @@ class Response {
     return this;
   }
 
+  setHeader(key: string, value: string) {
+    this._additionalHeaders[key] = value;
+    return this;
+  }
+
   send() {
     const headers = [
       `HTTP/1.1 ${this._status} ${this._message}`,
