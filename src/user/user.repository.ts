@@ -1,7 +1,7 @@
 import { dataSource } from "@/core/util/dataSource";
-import { User } from "./user.entity";
+import { User } from "@/user/user.entity";
 
-const userRepository = dataSource.getRepository(User).extend({
+const UserRepository = dataSource.getRepository(User).extend({
   async findByEmail(email: string) {
     return this.findOne({ where: { email } });
   },
@@ -14,7 +14,7 @@ const userRepository = dataSource.getRepository(User).extend({
     return this.find();
   },
 
-  async create(userData: Partial<User>) {
+  async createUser(userData: Partial<User>) {
     const user = this.create(userData);
     return this.save(user);
   },
@@ -28,4 +28,4 @@ const userRepository = dataSource.getRepository(User).extend({
   },
 });
 
-export { userRepository };
+export { UserRepository };
