@@ -1,7 +1,7 @@
 import { MiddlewareFunction } from "@/core/util/middleware";
 import { Request } from "@/core/http/request";
 import { Response } from "@/core/http/response";
-import { handleStaticFileRoute } from "@/core/builtin/staticFile.middleware";
+import { NotFoundError } from "../http/httpError";
 
 type RouteHandler = MiddlewareFunction;
 
@@ -60,9 +60,9 @@ class Router {
     if (node?.handlers && node.handlers[req.method]) {
       req.params = params;
       await this.runMiddleware(req, res, node.handlers[req.method]);
-    } else {
-      await this.runMiddleware(req, res, [handleStaticFileRoute]);
+      return;
     }
+    throw new NotFoundError();
   }
 
   private async runMiddleware(
@@ -70,10 +70,22 @@ class Router {
     res: Response,
     handlers: MiddlewareFunction[]
   ) {
-    for (const handler of handlers) {
-      await handler(req, res, () => {});
-      if (res.isSent) break;
-    }
+    let index = 0;
+    const next = async (err?: Error) => {
+      if (err) {
+        throw err;
+      }
+      if (index >= handlers.length || res.isSent) {
+        return;
+      }
+      const handler = handlers[index++];
+      try {
+        await handler.call(this, req, res, next);
+      } catch (e) {
+        await next(e as Error);
+      }
+    };
+    await next();
   }
 
   private findNode(

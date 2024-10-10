@@ -38,11 +38,7 @@ class WasApplication {
         const middlewares =
           Reflect.getMetadata("middlewares", instance, handlerName) || [];
 
-        this.router.addRoute(method, fullPath, [
-          ...this.globalMiddlewares,
-          ...middlewares,
-          handler,
-        ]);
+        this.router.addRoute(method, fullPath, [...middlewares, handler]);
         logger.info(`라우터 등록: ${method} ${fullPath}`);
       });
     });
@@ -94,6 +90,21 @@ class WasApplication {
     });
   }
 
+  private async runGlobalMiddlewares(request: Request, response: Response) {
+    let index = 0;
+    const next = async (err?: Error) => {
+      if (err) {
+        throw err;
+      }
+      if (index >= this.globalMiddlewares.length || response.isSent) {
+        return;
+      }
+      const middleware = this.globalMiddlewares[index++];
+      await middleware.call(this, request, response, next);
+    };
+    await next();
+  }
+
   private async processHttpRequest(
     socket: net.Socket,
     connectionBuffer: ConnectionBuffer
@@ -104,9 +115,9 @@ class WasApplication {
     logger.info(request.toString());
 
     try {
-      await this.router.handle(request, response);
+      await this.runGlobalMiddlewares(request, response);
       if (!response.isSent) {
-        throw new NotFoundError();
+        await this.router.handle(request, response);
       }
     } catch (e) {
       const {
