@@ -4,7 +4,7 @@ import { NextFunction, MiddlewareFunction } from "@/core/util/middleware";
 import { UnauthorizedError } from "@/core/http/httpError";
 import SessionStore from "@/core/util/sessionStore";
 
-const AuthMiddleware: MiddlewareFunction = async (
+const IsAuthenticated: MiddlewareFunction = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -19,4 +19,4 @@ const AuthMiddleware: MiddlewareFunction = async (
   next();
 };
 
-export { AuthMiddleware };
+export { IsAuthenticated };
