@@ -64,14 +64,14 @@ class Router {
   }
 
   addRoute(method: string, path: string, handlers: RouteHandler[]) {
-    let currentNode = this.root;
+    let node = this.root;
     const parts = path.split("/").filter(Boolean);
 
     for (const part of parts) {
-      currentNode = this.getOrCreateChildNode(currentNode, part);
+      node = this.getOrCreateChildNode(node, part);
     }
 
-    this.addHandlersToNode(currentNode, method, handlers);
+    this.addHandlersToNode(node, method, handlers);
   }
 
   async handle(req: Request, res: Response) {
