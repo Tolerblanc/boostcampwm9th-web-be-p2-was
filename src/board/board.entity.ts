@@ -33,6 +33,10 @@ class Board {
 
   @OneToMany(() => Comment, (comment) => comment.board)
   comments!: Comment[];
+
+  constructor(board: Partial<Board>) {
+    Object.assign(this, board);
+  }
 }
 
 export { Board };
