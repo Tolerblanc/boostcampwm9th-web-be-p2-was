@@ -27,6 +27,12 @@ class UnauthorizedError extends HttpError {
   }
 }
 
+class ForbiddenError extends HttpError {
+  constructor(message = "Forbidden.") {
+    super({ status: 403, message });
+  }
+}
+
 class NotFoundError extends HttpError {
   constructor(message = "Not Found.") {
     super({ status: 404, message });
@@ -61,6 +67,7 @@ export {
   HttpError,
   BadRequestError,
   UnauthorizedError,
+  ForbiddenError,
   NotFoundError,
   MethodNotAllowedError,
   ConflictError,
