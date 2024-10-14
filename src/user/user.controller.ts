@@ -3,18 +3,19 @@ import { Request } from "@/core/http/request";
 import { Response } from "@/core/http/response";
 import { UserService } from "@/user/user.service";
 import { UserRepository } from "@/user/user.repository";
-import { AuthMiddleware } from "@/core/builtin/auth.middleware";
+import { IsAuthenticated } from "@/core/builtin/isAuthenticated.middleware";
+import SessionStore from "@/core/util/sessionStore";
 
 @Controller("/user")
 class UserController {
   private readonly userService: UserService;
   constructor() {
     //TODO: 생성자 기반 의존성 주입
-    this.userService = new UserService(UserRepository);
+    this.userService = new UserService(UserRepository, SessionStore);
   }
 
   @Get("/list")
-  @UseMiddleware(AuthMiddleware)
+  @UseMiddleware(IsAuthenticated)
   async getUsers(req: Request, res: Response): Promise<void> {
     const users = await this.userService.getUserList();
     res.status(200).data(users).send();

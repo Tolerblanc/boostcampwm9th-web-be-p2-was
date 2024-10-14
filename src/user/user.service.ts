@@ -1,9 +1,12 @@
 import { BadRequestError, UnauthorizedError } from "@/core/http/httpError";
 import { UserRepository } from "./user.repository";
-import SessionStore from "@/core/util/sessionStore";
+import type SessionStore from "@/core/util/sessionStore";
 
 class UserService {
-  constructor(private readonly userRepository: typeof UserRepository) {}
+  constructor(
+    private readonly userRepository: typeof UserRepository,
+    private readonly sessionStore: typeof SessionStore
+  ) {}
 
   async getUserList() {
     const userList = await this.userRepository.list();
@@ -30,7 +33,7 @@ class UserService {
     const isPasswordCorrect = password === user?.password;
     if (!user || !isPasswordCorrect)
       throw new UnauthorizedError("Invalid email or password");
-    const sessionId = SessionStore.create(user.id, user.nickname);
+    const sessionId = this.sessionStore.create(user.id, user.nickname);
     return sessionId;
   }
 
