@@ -8,6 +8,15 @@ class UserService {
     private readonly sessionStore: typeof SessionStore
   ) {}
 
+  async getUserInfo(userId: number) {
+    const user = await this.userRepository.findById(userId);
+    return {
+      email: user.email,
+      nickname: user.nickname,
+      createdAt: user.createdAt,
+    };
+  }
+
   async getUserList() {
     const userList = await this.userRepository.list();
     return userList.map((user) => {
