@@ -1,13 +1,30 @@
+import { InternalServerError } from "@/core/http/httpError";
 import { dataSource } from "@/core/util/dataSource";
 import { User } from "@/user/user.entity";
 
 const UserRepository = dataSource.getRepository(User).extend({
+  async findById(id: number) {
+    const user = await this.findOne({ where: { id } });
+    if (!user) {
+      throw new InternalServerError("User not found");
+    }
+    return user;
+  },
+
   async findByEmail(email: string) {
-    return this.findOne({ where: { email } });
+    const user = await this.findOne({ where: { email } });
+    if (!user) {
+      throw new InternalServerError("User not found");
+    }
+    return user;
   },
 
   async findByNickname(nickname: string) {
-    return this.findOne({ where: { nickname } });
+    const user = await this.findOne({ where: { nickname } });
+    if (!user) {
+      throw new InternalServerError("User not found");
+    }
+    return user;
   },
 
   async list() {
