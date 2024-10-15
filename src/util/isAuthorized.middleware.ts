@@ -13,9 +13,9 @@ const IsAuthorized: MiddlewareFunction = async (
   const board = await BoardRepository.findById(boardId);
   const userId = Number(req.params.userId);
   if (board?.author.id !== userId) {
-    throw new ForbiddenError();
+    return next(new ForbiddenError());
   }
-  next();
+  return next();
 };
 
 export { IsAuthorized };
