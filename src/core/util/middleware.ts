@@ -1,7 +1,7 @@
 import { Request } from "@/core/http/request";
 import { Response } from "@/core/http/response";
 
-type NextFunction = () => void | Promise<void>;
+type NextFunction = (err?: Error) => void | Promise<void>;
 
 type MiddlewareFunction = (
   req: Request,
