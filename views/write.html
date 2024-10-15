@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web-BE-P2 WAS</title>
+    <link rel="stylesheet" href="index.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="write.js" defer></script>
+  </head>
+  <body class="m-0 mx-[200px]">
+    <header class="flex items-center justify-between h-16 pb-10 pt-5 px-5">
+      <h1 class="text-lg font-medium" onclick="location.href='/index.html'">
+        HELLO, WEB!
+      </h1>
+    </header>
+    <main class="flex flex-col gap-5">
+      <form class="w-full max-w-2xl mx-auto">
+        <h1 class="text-2xl font-medium mb-4">글쓰기</h1>
+        <div class="mb-10">
+          <div
+            class="box-border flex flex-col gap-2 border border-[#d2dae0] p-4 rounded-lg w-full"
+          >
+            <label for="title" class="text-sm font-medium text-[#4b5966]">
+              제목
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              class="border-none focus:outline-none"
+              placeholder="제목을 입력하세요"
+            />
+          </div>
+        </div>
+        <div class="mb-10">
+          <div
+            class="box-border h-[800px] flex flex-col gap-2 border border-[#d2dae0] p-4 rounded-lg w-full"
+          >
+            <label for="content" class="text-sm font-medium text-[#4b5966]">
+              내용
+            </label>
+            <textarea
+              id="content"
+              name="content"
+              rows="10"
+              placeholder="글의 내용을 입력하세요"
+              class="border-none focus:outline-none resize-none"
+            ></textarea>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button
+            type="submit"
+            class="bg-[#4362d0] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline hover:bg-[#3b56b8]"
+          >
+            작성 완료
+          </button>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>
