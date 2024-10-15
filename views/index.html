@@ -6,33 +6,11 @@
     <title>Web-BE-P2 WAS</title>
     <link rel="stylesheet" href="index.css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      function updateGreeting() {
-        const username = getCookie("username");
-        if (username) {
-          const greetingElement = document.getElementById("greeting");
-          if (greetingElement) {
-            greetingElement.textContent = `HELLO, ${username}!`;
-          }
-        }
-      }
-
-      function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(";").shift();
-      }
-
-      window.onload = updateGreeting;
-    </script>
+    <script src="index.js" defer></script>
   </head>
   <body class="m-0 mx-[200px]">
     <header class="flex items-center justify-between h-16 pb-10 pt-5 px-5">
-      <h1
-        id="greeting"
-        class="text-lg font-medium"
-        onclick="location.href='/index.html'"
-      >
+      <h1 class="text-lg font-medium" onclick="location.href='/index.html'">
         HELLO, WEB!
       </h1>
       <button
@@ -369,6 +347,7 @@
             </div>
             <button
               class="bg-[#4362d0] text-white rounded-lg px-4 py-2 border-none focus:outline-none"
+              onclick="location.href='/write.html'"
             >
               글쓰기
             </button>
