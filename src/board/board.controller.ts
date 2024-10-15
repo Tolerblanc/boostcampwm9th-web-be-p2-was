@@ -9,7 +9,7 @@ import {
 import { BoardService } from "@/board/board.service";
 import { BoardRepository } from "@/board/board.repository";
 import { IsAuthenticated } from "@/core/builtin/isAuthenticated.middleware";
-import { IsAuthorized } from "@/util/isAuthorized.middleware";
+import { IsBoardAuthor } from "@/util/isBoardAuthor.middleware";
 import { Request } from "@/core/http/request";
 import { Response } from "@/core/http/response";
 import { User } from "@/user/user.entity";
@@ -57,7 +57,7 @@ class BoardController {
 
   @Patch("/:id")
   @UseMiddleware(IsAuthenticated)
-  @UseMiddleware(IsAuthorized)
+  @UseMiddleware(IsBoardAuthor)
   async updateBoard(req: Request, res: Response) {
     const boardId = parseInt(req.params.id as string);
     const { title, content } = req.body;
@@ -70,7 +70,7 @@ class BoardController {
 
   @Delete("/:id")
   @UseMiddleware(IsAuthenticated)
-  @UseMiddleware(IsAuthorized)
+  @UseMiddleware(IsBoardAuthor)
   async deleteBoard(req: Request, res: Response) {
     const boardId = parseInt(req.params.id as string);
     await this.boardService.deleteBoard(boardId);
