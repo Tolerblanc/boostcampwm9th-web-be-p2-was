@@ -4,7 +4,7 @@ import { Response } from "@/core/http/response";
 import { ForbiddenError } from "@/core/http/httpError";
 import { BoardRepository } from "@/board/board.repository";
 
-const IsAuthorized: MiddlewareFunction = async (
+const IsBoardAuthor: MiddlewareFunction = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -18,4 +18,4 @@ const IsAuthorized: MiddlewareFunction = async (
   return next();
 };
 
-export { IsAuthorized };
+export { IsBoardAuthor };
