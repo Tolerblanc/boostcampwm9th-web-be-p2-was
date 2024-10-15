@@ -14,6 +14,13 @@ class UserController {
     this.userService = new UserService(UserRepository, SessionStore);
   }
 
+  @Get("/me")
+  @UseMiddleware(IsAuthenticated)
+  async getMe(req: Request, res: Response): Promise<void> {
+    const user = await this.userService.getUserInfo(Number(req.params.userId));
+    res.ok().data(user).send();
+  }
+
   @Get("/list")
   @UseMiddleware(IsAuthenticated)
   async getUsers(req: Request, res: Response): Promise<void> {
