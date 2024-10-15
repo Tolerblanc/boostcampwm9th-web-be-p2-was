@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web-BE-P2 WAS</title>
+    <link rel="stylesheet" href="index.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="member.js" defer></script>
+  </head>
+</html>
+<body class="m-0 mx-[200px]">
+  <header class="flex items-center justify-between h-16 pb-10 pt-5 px-5">
+    <h1 class="text-lg font-medium" onclick="location.href='/index.html'">
+      HELLO, WEB!
+    </h1>
+    <button
+      class="bg-[#4362d0] text-white rounded-lg px-4 py-2 border-none focus:outline-none gap-2.5"
+      onclick="location.href='/login.html'"
+    >
+      로그인/회원가입
+    </button>
+  </header>
+  <main class="flex flex-col items-center gap-10 px-5 mt-12">
+    <div
+      class="flex flex-col bg-[#4362d0] h-36 justify-center w-full p-8 gap-2 rounded-lg"
+    >
+      <p class="text-sm font-medium text-[#d2dae0]">
+        부스트캠프 백엔드 교육용 페이지
+      </p>
+      <h1 class="text-2xl font-medium text-white">HELLO, WEB! 입니다.</h1>
+    </div>
+    <section class="flex flex-col gap-4 w-full">
+      <p class="self-start text-sm font-medium text-[#4b5966]">
+        전체 멤버 <span id="memberCount">60</span>명
+      </p>
+      <div class="flex flex-col gap-2">
+        <!-- 멤버 목록 영역 -->
+        <div class="flex flex-col gap-2">
+          <div class="overflow-x-auto">
+            <table
+              class="w-full divide-y divide-gray-200 border-t border-b border-gray-200"
+            >
+              <thead class="bg-transparent">
+                <tr>
+                  <th
+                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-[140px]"
+                  >
+                    닉네임
+                  </th>
+                  <th
+                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-[500px]"
+                  >
+                    이메일
+                  </th>
+                  <th
+                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-[140px]"
+                  >
+                    가입일
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr class="pt-4 pb-4 gap-10 hover:bg-gray-100">
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500"
+                  >
+                    닉네임1
+                  </td>
+                  <td
+                    class="px-6 py-4 text-center whitespace-nowrap text-left text-sm font-medium text-gray-900"
+                  >
+                    email1@example.com
+                  </td>
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500"
+                  >
+                    YYYY. MM. DD
+                  </td>
+                </tr>
+                <!-- 추가 멤버 행들... -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center w-full">
+        <div class="flex gap-2">
+          <!-- 페이지네이션-->
+          <button
+            class="bg-none text-[#4362d0] rounded-lg px-3 py-2 border-none focus:outline-none"
+          >
+            &lt;
+          </button>
+          <button class="px-3 py-2 rounded-lg text-[#4362d0] hover:bg-gray-200">
+            1
+          </button>
+          <button class="px-3 py-2 rounded-lg text-[#879298] hover:bg-gray-200">
+            2
+          </button>
+          <button class="px-3 py-2 rounded-lg text-[#879298] hover:bg-gray-200">
+            3
+          </button>
+          <button class="px-3 py-2 rounded-lg text-[#879298] hover:bg-gray-200">
+            4
+          </button>
+          <button class="px-3 py-2 rounded-lg text-[#879298] hover:bg-gray-200">
+            5
+          </button>
+          <button
+            class="bg-none text-[#4362d0] rounded-lg px-3 py-2 border-none focus:outline-none"
+          >
+            &gt;
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
