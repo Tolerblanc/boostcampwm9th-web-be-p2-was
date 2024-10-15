@@ -9,14 +9,14 @@ const IsAuthenticated: MiddlewareFunction = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers.authorization;
+  const token = req.headers.Authorization?.split(" ")[1];
   const session = SessionStore.get(token);
   if (!session) {
-    throw new UnauthorizedError();
+    return next(new UnauthorizedError());
   }
   req.params.userId = session.userId;
   req.params.userName = session.userName;
-  next();
+  return next();
 };
 
 export { IsAuthenticated };
