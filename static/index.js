@@ -33,23 +33,24 @@ const itemsPerPage = 10;
 
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
-  if (!token) return;
-  fetch(`/user/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      header.innerHTML = loginedHeader(data.nickname);
-      fetchBoardList();
-      setupPagination();
-      setupWriteButton();
-      setupLogoutButton();
+  if (token) {
+    fetch(`/user/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
-    .catch((err) => {
-      console.error(err);
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        header.innerHTML = loginedHeader(data.nickname);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+  fetchBoardList();
+  setupWriteButton();
+  setupLogoutButton();
 });
 
 async function fetchBoardList() {
@@ -57,17 +58,46 @@ async function fetchBoardList() {
     const response = await fetch(
       `/board?page=${currentPage}&limit=${itemsPerPage}`
     );
+    if (!response.ok) {
+      throw new Error("서버 응답이 실패했습니다.");
+    }
     const data = await response.json();
-    updateBoardTable(data.items);
+
+    if (!data || !Array.isArray(data.boards)) {
+      throw new Error("유효하지 않은 데이터 형식입니다.");
+    }
+
+    if (data.boards.length === 0 && currentPage > 1) {
+      currentPage = 1;
+      fetchBoardList();
+      return;
+    }
+
+    updateBoardTable(data.boards);
     updatePagination(data.totalPages);
+    updateTotalPostCount(data.total);
   } catch (error) {
     console.error("게시글 목록을 가져오는 데 실패했습니다:", error);
+    updateBoardTable([]);
+    updatePagination(1);
+    updateTotalPostCount(0);
   }
 }
 
 function updateBoardTable(boards) {
   const tableBody = document.querySelector("tbody");
   tableBody.innerHTML = "";
+
+  if (boards.length === 0) {
+    const emptyRow = document.createElement("tr");
+    emptyRow.innerHTML = `
+      <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
+        게시글이 없습니다.
+      </td>
+    `;
+    tableBody.appendChild(emptyRow);
+    return;
+  }
 
   boards.forEach((board) => {
     const row = document.createElement("tr");
@@ -76,7 +106,7 @@ function updateBoardTable(boards) {
       <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium text-gray-900">${board.title}</td>
       <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">${board.author.nickname}</td>
       <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">${new Date(board.createdAt).toLocaleDateString()}</td>
-      <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">${board.views}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">${board.views || 0}</td>
     `;
     row.addEventListener("click", () => {
       location.href = `/board/${board.id}`;
@@ -86,10 +116,11 @@ function updateBoardTable(boards) {
 }
 
 function updatePagination(totalPages) {
-  const paginationContainer = document.querySelector(".flex.gap-2");
+  const paginationContainer = document.getElementById("paginationContainer");
+  if (!paginationContainer) return;
+
   paginationContainer.innerHTML = "";
 
-  // 이전 페이지 버튼
   const prevButton = createPaginationButton("&lt;", () => {
     if (currentPage > 1) {
       currentPage--;
@@ -98,7 +129,6 @@ function updatePagination(totalPages) {
   });
   paginationContainer.appendChild(prevButton);
 
-  // 페이지 번호 버튼
   for (let i = 1; i <= totalPages; i++) {
     const pageButton = createPaginationButton(
       i.toString(),
@@ -111,7 +141,6 @@ function updatePagination(totalPages) {
     paginationContainer.appendChild(pageButton);
   }
 
-  // 다음 페이지 버튼
   const nextButton = createPaginationButton("&gt;", () => {
     if (currentPage < totalPages) {
       currentPage++;
@@ -124,9 +153,18 @@ function updatePagination(totalPages) {
 function createPaginationButton(text, onClick, isActive = false) {
   const button = document.createElement("button");
   button.innerHTML = text;
-  button.className = `px-3 py-2 rounded-lg ${isActive ? "text-[#4362d0] bg-gray-200" : "text-[#879298] hover:bg-gray-200"}`;
+  button.className = `px-3 py-2 rounded-lg ${
+    isActive ? "text-[#4362d0] bg-gray-200" : "text-[#879298] hover:bg-gray-200"
+  }`;
   button.addEventListener("click", onClick);
   return button;
+}
+
+function updateTotalPostCount(total) {
+  const totalPostCountElement = document.getElementById("totalPostCount");
+  if (totalPostCountElement) {
+    totalPostCountElement.textContent = total;
+  }
 }
 
 function setupWriteButton() {

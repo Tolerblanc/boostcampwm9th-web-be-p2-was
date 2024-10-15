@@ -31,7 +31,7 @@
       </div>
       <section class="flex flex-col gap-4 w-full">
         <p class="self-start text-sm font-medium text-[#4b5966]">
-          전체 글 <span>60</span>개
+          전체 글 <span id="totalPostCount">60</span>개
         </p>
         <div class="flex flex-col gap-2">
           <!-- 게시판 영역 -->
@@ -291,7 +291,7 @@
           </div>
         </div>
         <div class="flex justify-between items-center w-full">
-          <div class="flex gap-2">
+          <div id="paginationContainer" class="flex gap-2">
             <!-- 페이지네이션-->
             <button
               class="bg-none text-[#4362d0] rounded-lg px-3 py-2 border-none focus:outline-none"
@@ -355,5 +355,8 @@
         </div>
       </section>
     </main>
+    <div id="paginationContainer" class="flex gap-2">
+      <!-- 페이지네이션 버튼들이 여기에 동적으로 추가됩니다 -->
+    </div>
   </body>
 </html>
