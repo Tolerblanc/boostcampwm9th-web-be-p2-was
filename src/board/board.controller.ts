@@ -2,8 +2,8 @@ import {
   Controller,
   Delete,
   Get,
-  Patch,
   Post,
+  Put,
   UseMiddleware,
 } from "@/core/util/decorators";
 import { BoardService } from "@/board/board.service";
@@ -49,7 +49,7 @@ class BoardController {
     res.data(board).send();
   }
 
-  @Patch("/:id")
+  @Put("/:id")
   @UseMiddleware(IsAuthenticated)
   @UseMiddleware(IsBoardAuthor)
   async updateBoard(req: Request, res: Response) {
