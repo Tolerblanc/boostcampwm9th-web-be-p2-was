@@ -33,10 +33,6 @@ const BoardRepository = dataSource.getRepository(Board).extend({
     await this.update(id, boardData);
     return this.findById(id) as Promise<Board>;
   },
-
-  async deleteBoard(id: number) {
-    return this.delete(id);
-  },
 });
 
 export { BoardRepository };

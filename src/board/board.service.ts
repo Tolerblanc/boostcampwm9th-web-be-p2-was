@@ -39,7 +39,7 @@ class BoardService {
     if (!board) {
       throw new NotFoundError("게시글을 찾을 수 없습니다.");
     }
-    await this.boardRepository.deleteBoard(boardId);
+    await this.boardRepository.delete(boardId);
   }
 }
 

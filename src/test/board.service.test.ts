@@ -118,14 +118,14 @@ describe("BoardService", () => {
       const existingBoard = { id: boardId, title: "삭제할 게시글" } as Board;
 
       mockBoardRepository.findById.mockResolvedValue(existingBoard);
-      mockBoardRepository.deleteBoard.mockResolvedValue(
+      mockBoardRepository.delete.mockResolvedValue(
         undefined as unknown as DeleteResult
       );
 
       await boardService.deleteBoard(boardId);
 
       expect(mockBoardRepository.findById).toHaveBeenCalledWith(boardId);
-      expect(mockBoardRepository.deleteBoard).toHaveBeenCalledWith(boardId);
+      expect(mockBoardRepository.delete).toHaveBeenCalledWith(boardId);
     });
 
     it("존재하지 않는 게시글 삭제 시 NotFoundError를 던져야 한다", async () => {

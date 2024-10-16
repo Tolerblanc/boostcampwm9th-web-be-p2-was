@@ -35,14 +35,6 @@ const UserRepository = dataSource.getRepository(User).extend({
     const user = this.create(userData);
     return this.save(user);
   },
-
-  async update(id: number, userData: Partial<User>) {
-    return this.update(id, userData);
-  },
-
-  async delete(id: number) {
-    return this.delete(id);
-  },
 });
 
 export { UserRepository };
