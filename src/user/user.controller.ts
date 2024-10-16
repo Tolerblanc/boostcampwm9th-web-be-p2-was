@@ -28,19 +28,6 @@ class UserController {
     res.status(200).data(users).send();
   }
 
-  @Post("/login")
-  async login(req: Request, res: Response): Promise<void> {
-    const token = await this.userService.login(req.body);
-    res
-      .ok()
-      .contentType("json")
-      .data({
-        redirectUrl: req.query.redirectUrl ?? "/",
-        token,
-      })
-      .send();
-  }
-
   @Post("/create")
   async createUser(req: Request, res: Response): Promise<void> {
     const newUser = await this.userService.create(req.body);
