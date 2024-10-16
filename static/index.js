@@ -106,10 +106,10 @@ function updateBoardTable(boards) {
       <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium text-gray-900">${board.title}</td>
       <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">${board.author.nickname}</td>
       <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">${new Date(board.createdAt).toLocaleDateString()}</td>
-      <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">${board.views || 0}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">${board.viewCount || 0}</td>
     `;
     row.addEventListener("click", () => {
-      location.href = `/board/${board.id}`;
+      location.href = `/board.html?id=${board.id}`;
     });
     tableBody.appendChild(row);
   });
