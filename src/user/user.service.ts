@@ -49,6 +49,13 @@ class UserService {
   async create(body: Record<string, string>) {
     //TODO: 추가 검증 로직 필요
     //TODO: 패스워드 암호화 필요
+    const isEssentialFieldEmpty = Object.values(body).some(
+      (value) => value === ""
+    );
+
+    if (isEssentialFieldEmpty)
+      throw new BadRequestError("All fields are required");
+
     const user = await this.userRepository.createUser({
       email: body.email,
       password: body.password,
