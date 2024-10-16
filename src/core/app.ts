@@ -1,7 +1,7 @@
 import net from "node:net";
 import "reflect-metadata";
 
-import { HttpError, NotFoundError } from "@/core/http/httpError";
+import { HttpError } from "@/core/http/httpError";
 import { logger } from "@/util/logger";
 import { CONTENT_TYPE } from "@/core/http/contentType.enum";
 import { Request } from "@/core/http/request";
@@ -126,6 +126,10 @@ class WasApplication {
         stack,
       } = e as HttpError;
 
+      if (status === 404) {
+        response.redirect("/404.html").send();
+        return;
+      }
       response
         .status(status)
         .message(message)
