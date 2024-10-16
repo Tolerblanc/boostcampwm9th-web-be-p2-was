@@ -22,12 +22,6 @@ class BoardController {
     this.boardService = new BoardService(BoardRepository);
   }
 
-  @Get("/write")
-  @UseMiddleware(IsAuthenticated)
-  async getWritePage(req: Request, res: Response) {
-    res.redirect("/write.html").send();
-  }
-
   @Post("/")
   @UseMiddleware(IsAuthenticated)
   async createBoard(req: Request, res: Response) {
