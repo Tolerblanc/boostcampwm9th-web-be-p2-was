@@ -46,6 +46,7 @@ class BoardController {
   async getBoardDetail(req: Request, res: Response) {
     const boardId = parseInt(req.params.id as string);
     const board = await this.boardService.getBoardById(boardId);
+    await this.boardService.incrementViewCount(boardId); // 조회수 증가
     res.data(board).send();
   }
 
