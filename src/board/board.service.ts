@@ -41,6 +41,12 @@ class BoardService {
     }
     await this.boardRepository.delete(boardId);
   }
+
+  async incrementViewCount(boardId: number): Promise<void> {
+    await this.boardRepository.update(boardId, {
+      viewCount: () => "viewCount + 1",
+    });
+  }
 }
 
 export { BoardService };

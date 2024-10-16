@@ -28,6 +28,9 @@ class Board {
   @UpdateDateColumn()
   updatedAt!: Date;
 
+  @Column({ type: "integer", default: 0 })
+  viewCount!: number;
+
   @ManyToOne(() => User, (user) => user.boards)
   author!: User;
 
