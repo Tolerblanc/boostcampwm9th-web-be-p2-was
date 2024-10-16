@@ -105,6 +105,7 @@ function renderBoardDetail(data) {
 // 댓글 렌더링 함수
 function renderComments(comments) {
   const commentList = document.getElementById("commentList");
+  commentList.innerHTML = "";
 
   comments.forEach((comment) => {
     const li = document.createElement("li");
