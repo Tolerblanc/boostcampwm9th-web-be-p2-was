@@ -11,7 +11,28 @@ const BoardRepository = dataSource.getRepository(Board).extend({
   async findById(id: number) {
     return this.findOne({
       where: { id },
-      relations: ["author", "comments"],
+      relations: ["author", "comments", "comments.author"],
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        createdAt: true,
+        updatedAt: true,
+        viewCount: true,
+        author: {
+          id: true,
+          nickname: true,
+        },
+        comments: {
+          id: true,
+          content: true,
+          createdAt: true,
+          author: {
+            id: true,
+            nickname: true,
+          },
+        },
+      },
     });
   },
 
