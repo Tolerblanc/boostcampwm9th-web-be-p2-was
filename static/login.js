@@ -40,7 +40,14 @@ loginForm.addEventListener("submit", function (e) {
     })
     .then((data) => {
       localStorage.setItem("token", data.token);
-      window.location.href = data.redirectUrl;
+      const redirectUrl = new URLSearchParams(window.location.search).get(
+        "redirectUrl"
+      );
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
+      } else {
+        window.location.href = data.redirectUrl || "/index.html";
+      }
     })
     .catch((error) => {
       console.error("에러 발생:", error);
