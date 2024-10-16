@@ -1,12 +1,8 @@
-import { BadRequestError, UnauthorizedError } from "@/core/http/httpError";
-import { UserRepository } from "./user.repository";
-import type SessionStore from "@/core/util/sessionStore";
+import { BadRequestError } from "@/core/http/httpError";
+import { UserRepository } from "@/user/user.repository";
 
 class UserService {
-  constructor(
-    private readonly userRepository: typeof UserRepository,
-    private readonly sessionStore: typeof SessionStore
-  ) {}
+  constructor(private readonly userRepository: typeof UserRepository) {}
 
   async getUserInfo(userId: number) {
     const user = await this.userRepository.findById(userId);

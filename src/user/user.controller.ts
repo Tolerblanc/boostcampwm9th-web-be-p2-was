@@ -4,14 +4,13 @@ import { Response } from "@/core/http/response";
 import { UserService } from "@/user/user.service";
 import { UserRepository } from "@/user/user.repository";
 import { AuthenticationMiddleware } from "@/core/builtin/authentication.middleware";
-import SessionStore from "@/core/util/sessionStore";
 
 @Controller("/user")
 class UserController {
   private readonly userService: UserService;
   constructor() {
     //TODO: 생성자 기반 의존성 주입
-    this.userService = new UserService(UserRepository, SessionStore);
+    this.userService = new UserService(UserRepository);
   }
 
   @Get("/me")
