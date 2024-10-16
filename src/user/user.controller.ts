@@ -3,7 +3,7 @@ import { Request } from "@/core/http/request";
 import { Response } from "@/core/http/response";
 import { UserService } from "@/user/user.service";
 import { UserRepository } from "@/user/user.repository";
-import { IsAuthenticated } from "@/core/builtin/isAuthenticated.middleware";
+import { AuthenticationMiddleware } from "@/core/builtin/authentication.middleware";
 import SessionStore from "@/core/util/sessionStore";
 
 @Controller("/user")
@@ -15,14 +15,14 @@ class UserController {
   }
 
   @Get("/me")
-  @UseMiddleware(IsAuthenticated)
+  @UseMiddleware(AuthenticationMiddleware)
   async getMe(req: Request, res: Response): Promise<void> {
     const user = await this.userService.getUserInfo(Number(req.params.userId));
     res.ok().data(user).send();
   }
 
   @Get("/list")
-  @UseMiddleware(IsAuthenticated)
+  @UseMiddleware(AuthenticationMiddleware)
   async getUsers(req: Request, res: Response): Promise<void> {
     const users = await this.userService.getUserList();
     res.status(200).data(users).send();

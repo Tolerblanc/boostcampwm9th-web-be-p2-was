@@ -8,8 +8,8 @@ import {
 } from "@/core/util/decorators";
 import { BoardService } from "@/board/board.service";
 import { BoardRepository } from "@/board/board.repository";
-import { IsAuthenticated } from "@/core/builtin/isAuthenticated.middleware";
-import { IsBoardAuthor } from "@/util/isBoardAuthor.middleware";
+import { AuthenticationMiddleware } from "@/core/builtin/authentication.middleware";
+import { BoardAuthorizationMiddleware } from "@/util/boardAuthorization.middleware";
 import { Request } from "@/core/http/request";
 import { Response } from "@/core/http/response";
 import { User } from "@/user/user.entity";
@@ -23,7 +23,7 @@ class BoardController {
   }
 
   @Post("/")
-  @UseMiddleware(IsAuthenticated)
+  @UseMiddleware(AuthenticationMiddleware)
   async createBoard(req: Request, res: Response) {
     const { title, content } = req.body;
     const board = await this.boardService.createBoard({
@@ -50,8 +50,8 @@ class BoardController {
   }
 
   @Put("/:id")
-  @UseMiddleware(IsAuthenticated)
-  @UseMiddleware(IsBoardAuthor)
+  @UseMiddleware(AuthenticationMiddleware)
+  @UseMiddleware(BoardAuthorizationMiddleware)
   async updateBoard(req: Request, res: Response) {
     const boardId = parseInt(req.params.id as string);
     const { title, content } = req.body;
@@ -63,8 +63,8 @@ class BoardController {
   }
 
   @Delete("/:id")
-  @UseMiddleware(IsAuthenticated)
-  @UseMiddleware(IsBoardAuthor)
+  @UseMiddleware(AuthenticationMiddleware)
+  @UseMiddleware(BoardAuthorizationMiddleware)
   async deleteBoard(req: Request, res: Response) {
     const boardId = parseInt(req.params.id as string);
     await this.boardService.deleteBoard(boardId);
