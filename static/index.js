@@ -32,6 +32,19 @@ let currentPage = 1;
 const itemsPerPage = 10;
 
 document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const tokenQuery = urlParams.get("token");
+
+  if (tokenQuery) {
+    localStorage.setItem("token", tokenQuery);
+    console.log(tokenQuery);
+    urlParams.delete("token");
+    const newUrl =
+      window.location.pathname +
+      (urlParams.toString() ? "?" + urlParams.toString() : "");
+    window.history.replaceState({}, document.title, newUrl);
+  }
+
   const token = localStorage.getItem("token");
   if (token) {
     fetch(`/user/me`, {
