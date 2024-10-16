@@ -4,6 +4,9 @@ import { UserRepository } from "@/user/user.repository";
 import { AuthService } from "@/auth/auth.service";
 import { Request } from "@/core/http/request";
 import { Response } from "@/core/http/response";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 @Controller("/auth")
 class AuthController {
@@ -25,6 +28,22 @@ class AuthController {
       })
       .send();
   }
+
+  @Get("/github")
+  async githubLogin(req: Request, res: Response): Promise<void> {
+    //TODO: URL 분리
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&scope=user:email`;
+    res.redirect(githubAuthUrl).send();
+  }
+
+  @Get("/github/callback")
+  async githubCallback(req: Request, res: Response): Promise<void> {
+    const code = req.query.code;
+    const token = await this.authService.githubOAuthLogin(code);
+    res.redirect(`/index.html?token=${token}`).send();
+  }
+
+  // TODO: @Post("/logout")
 }
 
 export { AuthController };
