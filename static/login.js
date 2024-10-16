@@ -24,7 +24,7 @@ loginForm.addEventListener("submit", function (e) {
     password: passwordInput.value,
   };
 
-  fetch("/user/login", {
+  fetch("/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
