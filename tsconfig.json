@@ -15,7 +15,8 @@
       "@/*": ["./src/*"]
     },
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false
   },
   "include": ["src/*.ts", "src/**/*.ts"], // 포함할 TypeScript 파일들
   "exclude": ["node_modules", "dist", "docs"] // 제외할 디렉터리
