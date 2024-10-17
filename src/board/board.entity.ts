@@ -14,28 +14,28 @@ import { Comment } from "@/comment/comment.entity";
 @Entity()
 class Board {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Column({ type: "varchar" })
-  title!: string;
+  title: string;
 
   @Column({ type: "text" })
   content: string;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  updatedAt: Date;
 
   @Column({ type: "integer", default: 0 })
-  viewCount!: number;
+  viewCount: number;
 
   @ManyToOne(() => User, (user) => user.boards)
-  author!: User;
+  author: User;
 
   @OneToMany(() => Comment, (comment) => comment.board)
-  comments!: Comment[];
+  comments: Comment[];
 }
 
 export { Board };

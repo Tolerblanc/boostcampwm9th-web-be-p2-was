@@ -11,19 +11,19 @@ import {
 @Entity()
 class Comment {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Column({ type: "text" })
-  content!: string;
+  content: string;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  createdAt: Date;
 
   @ManyToOne(() => User, (user) => user.boards)
-  author!: User;
+  author: User;
 
   @ManyToOne(() => Board, (board) => board.comments)
-  board!: Board;
+  board: Board;
 }
 
 export { Comment };

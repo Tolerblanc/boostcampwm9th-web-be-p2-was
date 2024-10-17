@@ -12,28 +12,28 @@ import { Comment } from "@/comment/comment.entity";
 @Entity()
 class User {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Column({ type: "varchar" })
-  nickname!: string;
+  nickname: string;
 
   @Column({ type: "varchar", unique: true })
-  email!: string;
+  email: string;
 
   @Column({ type: "varchar" })
-  password!: string;
+  password: string;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  updatedAt: Date;
 
   @OneToMany(() => Board, (board) => board.author)
-  boards!: Board[];
+  boards: Board[];
 
   @OneToMany(() => Comment, (comment) => comment.author)
-  comments!: Comment[];
+  comments: Comment[];
 }
 
 export { User };
