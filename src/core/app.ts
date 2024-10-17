@@ -12,6 +12,10 @@ import { RouteDefinition } from "@/core/util/decorators";
 import { MiddlewareFunction } from "@/core/util/middleware";
 import { dataSource } from "./util/dataSource";
 
+type Controller = new () => object & {
+  [key: string | symbol]: (...args: unknown[]) => unknown;
+};
+
 class WasApplication {
   private router: Router;
   private globalMiddlewares: MiddlewareFunction[] = [];
@@ -23,7 +27,7 @@ class WasApplication {
     this.init();
   }
 
-  registerControllers(...controllers: any[]) {
+  registerControllers(...controllers: Controller[]) {
     controllers.forEach((controller) => {
       const prefix = Reflect.getMetadata("prefix", controller) || "";
       const routes: RouteDefinition[] =
