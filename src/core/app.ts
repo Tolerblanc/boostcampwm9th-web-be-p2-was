@@ -10,11 +10,7 @@ import { Router } from "@/core/util/router";
 import { ConnectionBuffer } from "@/core/util/connectionBuffer";
 import { RouteDefinition } from "@/core/util/decorators";
 import { MiddlewareFunction } from "@/core/util/middleware";
-import { dataSource } from "./util/dataSource";
-
-type Controller = new () => object & {
-  [key: string | symbol]: (...args: unknown[]) => unknown;
-};
+import { dataSource } from "@/core/util/dataSource";
 
 class WasApplication {
   private router: Router;
@@ -27,7 +23,7 @@ class WasApplication {
     this.init();
   }
 
-  registerControllers(...controllers: Controller[]) {
+  registerControllers(...controllers: any[]) {
     controllers.forEach((controller) => {
       const prefix = Reflect.getMetadata("prefix", controller) || "";
       const routes: RouteDefinition[] =
@@ -38,7 +34,8 @@ class WasApplication {
       routes.forEach((route) => {
         const { method, path, handlerName } = route;
         const fullPath = prefix + path;
-        const handler = instance[handlerName].bind(instance);
+        const handler =
+          instance[handlerName as keyof typeof instance].bind(instance);
         const middlewares =
           Reflect.getMetadata("middlewares", instance, handlerName) || [];
 
