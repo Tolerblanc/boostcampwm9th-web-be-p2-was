@@ -11,11 +11,13 @@ function bootstrap() {
   const app = new WasApplication();
 
   app.use(handleStaticFileRoute);
-  app.registerControllers(IndexController);
-  app.registerControllers(AuthController);
-  app.registerControllers(UserController);
-  app.registerControllers(BoardController);
-  app.registerControllers(CommentController);
+  app.registerControllers(
+    IndexController,
+    AuthController,
+    UserController,
+    BoardController,
+    CommentController
+  );
 
   app.listen(3000);
 }
