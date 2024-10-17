@@ -34,10 +34,6 @@ class User {
 
   @OneToMany(() => Comment, (comment) => comment.author)
   comments!: Comment[];
-
-  constructor(partial: Partial<User>) {
-    Object.assign(this, partial);
-  }
 }
 
 export { User };

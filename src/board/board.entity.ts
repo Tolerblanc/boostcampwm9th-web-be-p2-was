@@ -20,7 +20,7 @@ class Board {
   title!: string;
 
   @Column({ type: "text" })
-  content!: string;
+  content: string;
 
   @CreateDateColumn()
   createdAt!: Date;
@@ -36,10 +36,6 @@ class Board {
 
   @OneToMany(() => Comment, (comment) => comment.board)
   comments!: Comment[];
-
-  constructor(board: Partial<Board>) {
-    Object.assign(this, board);
-  }
 }
 
 export { Board };
