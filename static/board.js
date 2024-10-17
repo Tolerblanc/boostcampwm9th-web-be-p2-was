@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((data) => {
         header.innerHTML = loginedHeader(data.nickname);
         document.getElementById("currentUser").innerText = data.nickname;
+        setupLogoutButton();
       })
       .catch((err) => {
         console.error(err);
@@ -80,7 +81,6 @@ function fetchBoardDetail(boardId) {
   fetch(`/board/${boardId}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data); // TODO: 지우셈ㅋㅋ
       renderBoardDetail(data);
     })
     .catch((err) => {
@@ -153,4 +153,34 @@ function createComment(event) {
       console.error("댓글 작성 중 오류 발생:", err);
       alert("댓글 작성에 실패했습니다.");
     });
+}
+
+function setupLogoutButton() {
+  const logoutButton = document.getElementById("logoutButton");
+  if (!logoutButton) {
+    return;
+  }
+  logoutButton.addEventListener("click", async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("토큰이 없습니다. 이미 로그아웃 상태일 수 있습니다.");
+      location.href = "/index.html";
+      return;
+    }
+    try {
+      const response = await fetch("/auth/logout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        localStorage.removeItem("token");
+        location.href = "/index.html";
+      }
+    } catch (error) {
+      console.error("로그아웃 중 오류 발생:", error);
+    }
+  });
 }

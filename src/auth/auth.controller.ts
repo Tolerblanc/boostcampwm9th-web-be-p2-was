@@ -43,7 +43,12 @@ class AuthController {
     res.redirect(`/index.html?token=${token}`).send();
   }
 
-  // TODO: @Post("/logout")
+  @Post("/logout")
+  logout(req: Request, res: Response): void {
+    const token = req.headers.authorization;
+    this.authService.logout(token);
+    res.redirect("/").send();
+  }
 }
 
 export { AuthController };

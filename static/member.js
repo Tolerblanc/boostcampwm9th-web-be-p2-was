@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((res) => res.json())
     .then((data) => {
       header.innerHTML = loginedHeader(data.nickname);
+      setupLogoutButton();
     })
     .catch((err) => {
       console.error(err);
@@ -91,3 +92,33 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("멤버 목록을 가져오는 중 오류 발생:", error);
     });
 });
+
+function setupLogoutButton() {
+  const logoutButton = document.getElementById("logoutButton");
+  if (!logoutButton) {
+    return;
+  }
+  logoutButton.addEventListener("click", async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("토큰이 없습니다. 이미 로그아웃 상태일 수 있습니다.");
+      location.href = "/index.html";
+      return;
+    }
+    try {
+      const response = await fetch("/auth/logout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        localStorage.removeItem("token");
+        location.href = "/index.html";
+      }
+    } catch (error) {
+      console.error("로그아웃 중 오류 발생:", error);
+    }
+  });
+}

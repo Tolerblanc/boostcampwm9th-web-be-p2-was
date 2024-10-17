@@ -35,6 +35,10 @@ class AuthService {
     return sessionId;
   }
 
+  logout(token: string) {
+    this.sessionStore.destroy(token);
+  }
+
   async githubOAuthLogin(code: string) {
     const accessToken = await this.getGitHubAccessToken(code);
     const { email, nickname } = await this.getGitHubUser(accessToken);
